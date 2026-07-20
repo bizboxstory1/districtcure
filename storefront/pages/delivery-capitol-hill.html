@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Capitol Hill CBD & Medical Marijuana Dispensary Delivery | District Cure</title>
-<meta name="description" content="Capitol Hill's trusted cannabis delivery. Serving professionals and residents near Eastern Market with premium CBD wellness products, medical marijuana, and fast, discreet delivery in Washington DC.">
+<meta name="description" content="Capitol Hill's trusted cannabis delivery. Serving professionals and residents near Eastern Market with premium CBD wellness products, medical marijuana, and the calming Granddaddy Purple strain.">
 <link rel="canonical" href="https://districtcuredispensary.com/delivery/capitol-hill">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/brand-logo">
@@ -17,23 +17,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/pages/page.css">
-<script>
-  // Script to allow direct purchase from landing page
-  function buyDirect(id, name, price, image, weight, category) {
-    try {
-      const cart = JSON.parse(localStorage.getItem('dc_cart') || '[]');
-      const item = cart.find(x => x.id === id);
-      if (item) item.qty++;
-      else cart.push({ id, name, price: Number(price), image, weight, category, qty: 1 });
-      localStorage.setItem('dc_cart', JSON.stringify(cart));
-      // Redirect to main page and auto-open cart
-      window.location.href = '/?open=cart';
-    } catch(e) {
-      console.error(e);
-      window.location.href = '/#shop';
-    }
-  }
-</script>
 </head>
 <body>
 
@@ -53,18 +36,88 @@
 
 <main class="pg-wrap">
 
-  <!-- Capitol Hill Custom Cover Image -->
-  <section style="padding: 0 clamp(20px, 4vw, 56px); max-width: 1200px; margin: 0 auto 60px;">
-    <div style="border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-      <img src="/uploads/capitol-hill.png" alt="Capitol Hill Cannabis Delivery Washington DC" style="width: 100%; height: auto; object-fit: cover; aspect-ratio: 16/7; background: var(--card); display: block;">
-    </div>
+  <!-- Capitol Hill Custom Cover Image (FIXED STYLING) -->
+  <section style="padding: 0 clamp(20px, 4vw, 56px); max-width: 1200px; margin: 0 auto 60px; text-align: center;">
+    <img src="/uploads/capitol-hill.png" alt="Capitol Hill Cannabis Delivery Washington DC" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
   </section>
 
-  <!-- Popular Products Dynamic Grid -->
+  <!-- Popular Products Static Grid (REVERTED TO GRANDDADDY PURPLE) -->
   <section class="pg-section" style="padding-top: 0;">
-    <h2>Trending in <em>Capitol Hill</em></h2>
+    <h2>Popular in <em>Capitol Hill</em></h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; margin-top: 30px;">
-      <!-- DYNAMIC_PRODUCTS -->
+      
+      <!-- Product 1 -->
+      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
+        <div class="p-thumb">
+          <div class="p-thumb-fallback">
+             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">🍇</span>
+             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Granddaddy Purple Flower</span>
+             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Flower</span>
+          </div>
+          <div class="p-thumb-shine"></div>
+        </div>
+        <div class="p-info">
+          <div class="p-strain-row">
+            <span class="strain-pip pip-indica"></span><span class="strain-label">Indica</span>
+            <span class="p-brand">District Cure</span>
+          </div>
+          <h3 class="p-name">Granddaddy Purple</h3>
+          <div class="p-specs">THC: 22% • Stress Relief</div>
+          <div class="p-footer">
+             <div class="p-price">$55.00</div>
+             <button class="btn-add">Shop Now</button>
+          </div>
+        </div>
+      </a>
+
+      <!-- Product 2 -->
+      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
+        <div class="p-thumb">
+          <div class="p-thumb-fallback">
+             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">💧</span>
+             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Sleep & Recover CBD</span>
+             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Wellness</span>
+          </div>
+          <div class="p-thumb-shine"></div>
+        </div>
+        <div class="p-info">
+          <div class="p-strain-row">
+            <span class="strain-pip pip-cbd"></span><span class="strain-label">CBD</span>
+            <span class="p-brand">DC Wellness</span>
+          </div>
+          <h3 class="p-name">Recover Tincture</h3>
+          <div class="p-specs">1000mg CBD • 0% THC</div>
+          <div class="p-footer">
+             <div class="p-price">$45.00</div>
+             <button class="btn-add">Shop Now</button>
+          </div>
+        </div>
+      </a>
+
+      <!-- Product 3 -->
+      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
+        <div class="p-thumb">
+          <div class="p-thumb-fallback">
+             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">🔥</span>
+             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Premium Indica Pre-Rolls</span>
+             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Pre-Roll</span>
+          </div>
+          <div class="p-thumb-shine"></div>
+        </div>
+        <div class="p-info">
+          <div class="p-strain-row">
+            <span class="strain-pip pip-indica"></span><span class="strain-label">Indica</span>
+            <span class="p-brand">District Cure</span>
+          </div>
+          <h3 class="p-name">Indica Pre-Roll Pack</h3>
+          <div class="p-specs">5x 0.5g • Ready to spark</div>
+          <div class="p-footer">
+             <div class="p-price">$30.00</div>
+             <button class="btn-add">Shop Now</button>
+          </div>
+        </div>
+      </a>
+
     </div>
   </section>
 

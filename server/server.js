@@ -1394,56 +1394,12 @@ for (const page of PAGES) {
   });
 }
 
-// ─── City Delivery SEO Pages (SSR) ───────────────────────────────
+// ─── City Delivery SEO Pages ────────────────────────────────────
 const CITY_PAGES = ['capitol-hill'];
-
-const escapeQuote = (str) => str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
 for (const city of CITY_PAGES) {
   app.get(`/delivery/${city}`, (_, res) => {
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
-    const filePath = path.join(ROOT, 'storefront', 'pages', `delivery-${city}.html`);
-    
-    fs.readFile(filePath, 'utf8', (err, html) => {
-      if (err) return res.status(404).send('Not Found');
-      
-      // Pull top 3 available local products
-      const topProducts = PRODUCTS.all().filter(p => p.available !== false).slice(0, 3);
-      
-      let productsHtml = '';
-      if (topProducts.length > 0) {
-        productsHtml = topProducts.map(p => `
-      <a href="#" onclick="event.preventDefault(); buyDirect('${p.id}', '${escapeQuote(p.name)}', '${p.price}', '${p.image || ''}', '${p.weight || ''}', '${p.category || ''}')" style="text-decoration: none; display: block;" class="p-card">
-        <div class="p-thumb">
-          <div class="p-thumb-fallback">
-             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">${p.emoji || '🌿'}</span>
-             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream); text-align: center;">${p.name}</span>
-             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">${p.category}</span>
-          </div>
-          ${p.image ? `<img src="${p.image}" alt="${escapeQuote(p.name)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;border-radius:10px;">` : ''}
-          <div class="p-thumb-shine"></div>
-        </div>
-        <div class="p-info">
-          <div class="p-strain-row">
-            <span class="strain-pip pip-${(p.strain||'hybrid').toLowerCase()}"></span><span class="strain-label">${p.strain || 'Hybrid'}</span>
-            <span class="p-brand">${p.brand || 'District Cure'}</span>
-          </div>
-          <h3 class="p-name">${p.name}</h3>
-          <div class="p-specs" style="font-size: 11px;">${p.thc ? p.thc + ' • ' : ''}${p.weight || ''}</div>
-          <div class="p-footer">
-             <div class="p-price">$${Number(p.price).toFixed(2)}</div>
-             <button class="btn-add">Buy Now</button>
-          </div>
-        </div>
-      </a>`).join('');
-      } else {
-        productsHtml = '<p style="color:var(--muted); font-size: 14px;">No products available at the moment. Please check back soon.</p>';
-      }
-
-      // Inject into the placeholder
-      const finalHtml = html.replace('<!-- DYNAMIC_PRODUCTS -->', productsHtml);
-      res.type('html').send(finalHtml);
-    });
+    res.sendFile(path.join(ROOT, 'storefront', 'pages', `delivery-${city}.html`));
   });
 }
 
