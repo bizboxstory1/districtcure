@@ -1,0 +1,29 @@
+# ── Never commit these ───────────────────────
+.env
+*.env.local
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+
+# Build artifacts
+dist/
+.cache/
+
+# Runtime data (orders, customers, uploaded images, etc.)
+data/
+uploads/
+backups/

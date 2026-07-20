@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "ms-vscode-remote.remote-ssh",
+    "ritwickdey.liveserver",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "pkief.material-icon-theme"
+  ]
+}

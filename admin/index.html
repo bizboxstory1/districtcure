@@ -1,0 +1,2564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>District Cure — Admin Panel</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0d12;--surface:#11151c;--card:#161b24;--card2:#1c222c;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.13);
+  --green:#1E7A3C;--green2:#25984A;--green3:#30BE5C;--green4:#50D67A;
+  --gold:#B8832A;--gold2:#D4A03C;--gold3:#EEBC58;
+  --blue:#2563eb;--blue2:#3b82f6;
+  --red:#dc2626;--red2:#ef4444;
+  --orange:#ea580c;--orange2:#f97316;
+  --purple:#7c3aed;--purple2:#8b5cf6;
+  --text:#e2e8f0;--text-dim:#94a3b8;--muted:#64748b;--dim:#334155;
+  --radius:10px;--radius-lg:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;color:var(--text);width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green3);box-shadow:0 0 0 3px rgba(48,190,92,.12)}
+button{cursor:pointer;font-weight:600;border:none;border-radius:var(--radius);padding:9px 16px;transition:all .15s;background:var(--card2);color:var(--text)}
+button:hover{background:var(--dim)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--green2),var(--green));color:#fff}
+.btn-primary:hover{background:linear-gradient(135deg,var(--green3),var(--green2))}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#fff}
+.btn-gold:hover{background:linear-gradient(135deg,var(--gold3),var(--gold2))}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:var(--red2)}
+.btn-ghost{background:transparent;border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border2);background:var(--card)}
+code,.mono{font-family:JetBrains Mono,monospace;font-size:13px}
+
+#login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0d12,#11151c);padding:20px;z-index:1000}
+.login-card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px 32px;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:30px}
+.login-logo-mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--green2),var(--green));display:flex;align-items:center;justify-content:center;font-size:18px}
+.login-logo-text{font-size:16px;font-weight:700}
+.login-logo-sub{font-size:9px;letter-spacing:.3em;color:var(--gold3);text-transform:uppercase;margin-top:2px}
+.login-h{font-size:22px;font-weight:700;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:6px}
+#login-error{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:14px}
+#login-error.show{display:block}
+.login-btn{width:100%;padding:12px;margin-top:8px;font-size:14px}
+.login-help{font-size:11px;color:var(--muted);margin-top:18px;text-align:center;line-height:1.6}
+
+#app{display:none;min-height:100vh}
+#app.ready{display:grid;grid-template-columns:240px 1fr}
+aside{background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:18px 0;display:flex;flex-direction:column}
+.brand{padding:0 22px 18px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.brand-flex{display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--green2),var(--green));display:flex;align-items:center;justify-content:center;font-size:16px}
+.brand-name{font-size:14px;font-weight:700;line-height:1.1}
+.brand-sub{font-size:8.5px;letter-spacing:.3em;color:var(--gold3);text-transform:uppercase;margin-top:2px}
+nav.side{flex:1;padding:0 12px}
+.nav-section{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:14px 10px 6px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:8px;color:var(--text-dim);font-size:13px;font-weight:500;cursor:pointer;transition:all .12s;margin-bottom:1px}
+.nav-item:hover{background:var(--card);color:var(--text)}
+.nav-item.active{background:linear-gradient(135deg,rgba(30,122,60,.15),rgba(48,190,92,.08));color:var(--green4);border-left:2px solid var(--green3);padding-left:10px}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.side-footer{padding:14px 22px;border-top:1px solid var(--border);font-size:11px}
+.side-user{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.side-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.side-user-name{font-weight:600;color:var(--text);font-size:12px}
+.side-user-role{color:var(--text-dim);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.side-logout{width:100%;font-size:11px;padding:7px;background:var(--card);color:var(--text-dim)}
+.side-logout:hover{background:var(--red);color:#fff}
+
+main{padding:24px 32px;overflow-x:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.page-title{font-size:24px;font-weight:700;letter-spacing:-.01em}
+.page-sub{font-size:13px;color:var(--text-dim);margin-top:2px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.live-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:100px;font-size:11px;font-weight:600;background:rgba(48,190,92,.12);border:1px solid rgba(48,190,92,.3);color:var(--green4);text-transform:uppercase;letter-spacing:.08em}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green4);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px}
+.kpi-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+.kpi-val{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.kpi.green .kpi-val{color:var(--green4)}
+.kpi.gold .kpi-val{color:var(--gold3)}
+.kpi.blue .kpi-val{color:var(--blue2)}
+.kpi.purple .kpi-val{color:var(--purple2)}
+.kpi.orange .kpi-val{color:var(--orange2)}
+
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px}
+.chart-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.chart-h h3{font-size:16px;font-weight:700}
+.chart-bars{display:flex;align-items:flex-end;gap:10px;height:200px;padding:0 4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.bar{width:100%;background:linear-gradient(180deg,var(--green3),var(--green));border-radius:6px 6px 0 0;transition:all .3s;min-height:4px;position:relative}
+.bar-col:hover .bar{background:linear-gradient(180deg,var(--green4),var(--green3))}
+.bar-tip{position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.bar-col:hover .bar-tip{opacity:1}
+.bar-lbl{font-size:11px;color:var(--text-dim);font-weight:500}
+
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:18px}
+.table-toolbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
+.table-toolbar h3{font-size:15px;font-weight:700}
+.table-toolbar-tools{display:flex;gap:8px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap}
+.table-toolbar input,.table-toolbar select{padding:7px 11px;font-size:13px;width:auto;min-width:140px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 18px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);background:var(--surface)}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:var(--card2)}
+tbody tr:last-child td{border-bottom:none}
+.tbl-empty{padding:40px 20px;text-align:center;color:var(--text-dim);font-size:13px}
+.tbl-thumb{width:44px;height:44px;border-radius:8px;background:var(--card2);object-fit:cover;display:block}
+.tbl-thumb-emoji{width:44px;height:44px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:22px}
+.tbl-name{font-weight:600}
+.tbl-meta{font-size:11px;color:var(--text-dim);margin-top:2px}
+.tbl-actions{display:flex;gap:6px}
+.tbl-actions button{padding:5px 10px;font-size:11px;font-weight:600}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.b-green{background:rgba(48,190,92,.12);color:var(--green4);border:1px solid rgba(48,190,92,.25)}
+.b-gold{background:rgba(238,188,88,.12);color:var(--gold3);border:1px solid rgba(238,188,88,.25)}
+.b-blue{background:rgba(59,130,246,.12);color:var(--blue2);border:1px solid rgba(59,130,246,.25)}
+.b-red{background:rgba(239,68,68,.12);color:var(--red2);border:1px solid rgba(239,68,68,.25)}
+.b-orange{background:rgba(249,115,22,.12);color:var(--orange2);border:1px solid rgba(249,115,22,.25)}
+.b-gray{background:var(--card2);color:var(--text-dim);border:1px solid var(--border)}
+.b-purple{background:rgba(139,92,246,.12);color:var(--purple2);border:1px solid rgba(139,92,246,.25)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:500}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal.wide{max-width:780px}
+.modal-h{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-h h3{font-size:17px;font-weight:700}
+.modal-x{width:32px;height:32px;background:var(--card2);color:var(--text-dim);border-radius:8px;padding:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.modal-body{padding:20px 22px}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+.img-picker{display:flex;gap:12px;align-items:flex-start}
+.img-preview{width:96px;height:96px;border-radius:10px;background:var(--card2);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--text-dim);flex-shrink:0;border:1px solid var(--border)}
+.img-controls{flex:1;display:flex;flex-direction:column;gap:8px}
+.img-controls input[type=file]{padding:6px}
+.img-hint{font-size:11px;color:var(--muted)}
+
+#toast-stack{position:fixed;bottom:24px;right:24px;z-index:600;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.4);min-width:260px;animation:t-in .3s ease}
+.toast.ok{border-color:rgba(48,190,92,.35);background:linear-gradient(90deg,rgba(48,190,92,.1),var(--card))}
+.toast.err{border-color:rgba(239,68,68,.35);background:linear-gradient(90deg,rgba(239,68,68,.1),var(--card))}
+.toast.info{border-color:rgba(59,130,246,.35);background:linear-gradient(90deg,rgba(59,130,246,.1),var(--card))}
+@keyframes t-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+.page{display:none}
+.page.active{display:block}
+
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px}
+.settings-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:12px}
+.toggle-row .tr-label{font-size:13px;font-weight:600;color:var(--text)}
+.toggle-row .tr-sub{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.5}
+.switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;cursor:pointer}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;inset:0;background:var(--card2);border:1px solid var(--border);border-radius:26px;transition:.25s}
+.switch .slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:var(--text-dim);border-radius:50%;transition:.25s}
+.switch input:checked + .slider{background:rgba(48,190,92,.25);border-color:rgba(48,190,92,.5)}
+.switch input:checked + .slider::before{transform:translateX(20px);background:var(--green4)}
+
+@media (max-width:900px){
+  #app.ready{grid-template-columns:1fr}
+  aside{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--border)}
+  main{padding:18px}
+  .settings-grid{grid-template-columns:1fr}
+  .field-row,.field-row-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">🌿</div>
+      <div>
+        <div class="login-logo-text">District Cure</div>
+        <div class="login-logo-sub">Admin Panel</div>
+      </div>
+    </div>
+    <div class="login-h">Welcome back</div>
+    <div class="login-sub">Sign in to manage your dispensary</div>
+    <div id="login-error"></div>
+    <form onsubmit="event.preventDefault();doLogin()">
+      <div class="login-field"><label>Username</label><input type="text" id="login-user" autocomplete="username" autofocus></div>
+      <div class="login-field"><label>Password</label><input type="password" id="login-pwd" autocomplete="current-password"></div>
+      <button type="submit" class="btn-primary login-btn">Sign in</button>
+    </form>
+    <div class="login-help">Default credentials are printed in the server logs on first boot.</div>
+  </div>
+</div>
+
+<div id="app">
+  <aside>
+    <div class="brand">
+      <div class="brand-flex">
+        <div class="brand-mark">🌿</div>
+        <div><div class="brand-name">District Cure</div><div class="brand-sub">Admin Panel</div></div>
+      </div>
+    </div>
+    <nav class="side">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" data-page="orders" data-owner="1"><span class="nav-icon">📦</span> Orders</div>
+      <div class="nav-section">Catalog</div>
+      <div class="nav-item" data-page="inventory" data-owner="1"><span class="nav-icon">🌿</span> Inventory</div>
+      <div class="nav-item" data-page="specials"><span class="nav-icon">✨</span> Specials</div>
+      <div class="nav-item" data-page="promos"><span class="nav-icon">🎟️</span> Promo Codes</div>
+      <div class="nav-item" data-page="reviews"><span class="nav-icon">⭐</span> Reviews</div>
+      <div class="nav-item" data-page="blog"><span class="nav-icon">📝</span> Blog</div>
+      <div class="nav-item" data-page="seo"><span class="nav-icon">🔍</span> SEO Tools</div>
+      <div class="nav-section">People</div>
+      <div class="nav-item" data-page="customers" data-owner="1"><span class="nav-icon">👥</span> Customers</div>
+      <div class="nav-item" data-page="drivers" data-owner="1"><span class="nav-icon">🚗</span> Drivers</div>
+      <div class="nav-item" data-page="staff" data-owner="1"><span class="nav-icon">👔</span> Staff</div>
+      <div class="nav-section">Insights</div>
+      <div class="nav-item" data-page="analytics" data-owner="1"><span class="nav-icon">📈</span> Analytics</div>
+      <div class="nav-section">System</div>
+      <div class="nav-item" data-page="users" data-owner="1"><span class="nav-icon">👥</span> Team Logins</div>
+      <div class="nav-item" data-page="settings" data-owner="1"><span class="nav-icon">⚙️</span> Settings</div>
+    </nav>
+    <div class="side-footer">
+      <div class="side-user">
+        <div class="side-avatar" id="side-avatar">A</div>
+        <div><div class="side-user-name" id="side-username">—</div><div class="side-user-role" id="side-role">—</div></div>
+      </div>
+      <button class="side-logout" onclick="doLogout()">Sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="page active" id="page-dashboard">
+      <div class="topbar">
+        <div><div class="page-title">Dashboard</div><div class="page-sub">Live overview of your operations</div></div>
+        <div class="topbar-actions"><span class="live-pill"><span class="live-dot"></span>Live</span><button class="btn-ghost" onclick="loadAll()">↻ Refresh</button></div>
+      </div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="chart-card">
+        <div class="chart-h">
+          <div><h3>Revenue · Last 7 days</h3><div style="font-size:12px;color:var(--text-dim);margin-top:2px">Total order revenue, day by day</div></div>
+          <div style="font-size:13px;color:var(--green4);font-weight:600" id="chart-total">—</div>
+        </div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar"><h3>Recent Orders</h3><div class="table-toolbar-tools"><button class="btn-ghost" onclick="showPage('orders')">View all →</button></div></div>
+        <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Time</th><th></th></tr></thead><tbody id="dash-orders"></tbody></table>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar"><h3>Low Stock Alerts</h3></div>
+        <table><thead><tr><th>Product</th><th>Category</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody id="dash-low-stock"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-orders">
+      <div class="topbar">
+        <div><div class="page-title">Orders</div><div class="page-sub">Manage incoming orders, assign drivers, update status</div></div>
+        <div class="topbar-actions"><span class="live-pill"><span class="live-dot"></span>Live</span></div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <h3 id="orders-count">All Orders</h3>
+          <div class="table-toolbar-tools">
+            <input type="text" id="orders-search" placeholder="Search ID, customer, phone…" oninput="renderOrders()">
+            <select id="orders-status" onchange="renderOrders()">
+              <option value="">All statuses</option><option value="pending">Pending</option><option value="confirmed">Confirmed</option>
+              <option value="processing">Processing</option><option value="out_for_delivery">Out for delivery</option>
+              <option value="delivered">Delivered</option><option value="cancelled">Cancelled</option>
+            </select>
+            <select id="orders-type" onchange="renderOrders()"><option value="">All types</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option></select>
+          </div>
+        </div>
+        <table><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Type</th><th>Status</th><th>Driver</th><th>Time</th><th></th></tr></thead><tbody id="orders-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-inventory">
+      <div class="topbar">
+        <div><div class="page-title">Inventory</div><div class="page-sub">Live product catalog — what your customers see</div></div>
+        <div class="topbar-actions">
+          <button class="btn-ghost" onclick="reseedConfirm()">↻ Restore Seed Catalog</button>
+          <button class="btn-ghost" onclick="openCsvImport()">📥 Import CSV</button>
+          <button class="btn-ghost" id="bulk-ai-btn" onclick="bulkGenerateMissingImages()">🎨 Fill Missing Images (AI)</button>
+          <button class="btn-primary" onclick="openProductModal()">+ Add Product</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <h3 id="inv-count">Products</h3>
+          <div class="table-toolbar-tools">
+            <input type="text" id="inv-search" placeholder="Search product, brand…" oninput="renderInventory()">
+            <select id="inv-cat" onchange="renderInventory()"><option value="">All categories</option></select>
+            <select id="inv-stock" onchange="renderInventory()"><option value="">All stock levels</option><option value="low">Low stock (&lt; 5)</option><option value="out">Out of stock</option><option value="ok">In stock</option></select>
+          </div>
+        </div>
+        <table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>THC</th><th>Status</th><th></th></tr></thead><tbody id="inv-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-promos">
+      <div class="topbar">
+        <div><div class="page-title">Promo Codes</div><div class="page-sub">Discount codes customers type at checkout</div></div>
+        <div class="topbar-actions"><button class="btn-primary" onclick="openPromoModal()">+ Add Promo</button></div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Name</th><th>Code</th><th>Type</th><th>Value</th><th>Used</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody id="promo-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-specials">
+      <div class="topbar">
+        <div><div class="page-title">Homepage Specials</div><div class="page-sub">Pictures, headlines & links shown on the storefront — daily, weekly, or monthly</div></div>
+        <div class="topbar-actions">
+          <button class="btn-ghost" onclick="window.open('/#specials','_blank')">↗ Preview on site</button>
+          <button class="btn-primary" onclick="openSpecialModal()">+ Add Special</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="specials-kpis"></div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <h3 id="specials-count">All Specials</h3>
+          <div class="table-toolbar-tools">
+            <select id="specials-filter" onchange="renderSpecials()">
+              <option value="">All</option>
+              <option value="published">Published only</option>
+              <option value="draft">Drafts only</option>
+              <option value="archived">Archived</option>
+              <option value="live">Live right now</option>
+            </select>
+          </div>
+        </div>
+        <table><thead><tr><th></th><th>Title</th><th>Cadence</th><th>Window</th><th>Status</th><th>Performance</th><th></th></tr></thead><tbody id="specials-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-reviews">
+      <div class="topbar">
+        <div><div class="page-title">Reviews &amp; Ratings</div><div class="page-sub">Show your best Google reviews on the website. Add real reviews — nothing is auto-generated.</div></div>
+        <div class="topbar-actions">
+          <button class="btn-ghost" onclick="window.open('/#reviews','_blank')">↗ Preview on site</button>
+          <button class="btn-primary" onclick="openReviewModal()">+ Add Review</button>
+        </div>
+      </div>
+      <div class="settings-card" style="margin-bottom:18px">
+        <h3>🔗 Google Business</h3>
+        <div class="field-row">
+          <div class="field"><label>Overall rating (e.g. 4.8)</label><input type="number" id="set-gRating" step="0.1" min="0" max="5"></div>
+          <div class="field"><label>Total # of reviews</label><input type="number" id="set-gCount" min="0"></div>
+        </div>
+        <div class="field"><label>Google listing URL (your Google Maps / Business page)</label><input type="text" id="set-gProfile" placeholder="https://g.page/districtcure  or  Google Maps link"></div>
+        <div class="field"><label>"Write a review" link</label><input type="text" id="set-gReview" placeholder="https://g.page/r/.../review"></div>
+        <button class="btn-primary" onclick="saveGoogleBusiness()" style="width:100%;margin-top:6px">Save Google Business Info</button>
+        <div style="margin-top:14px;padding:12px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6">These power the rating in the site header &amp; Reviews section. Enter your real Google numbers, or connect the API below to pull them automatically.</div>
+
+        <h3 style="margin-top:22px">🔌 Auto-sync from Google</h3>
+        <div class="field"><label>Google Places API key</label><input type="password" id="set-gApiKey" placeholder="AIza… (stored securely on the server, never shown on the site)"></div>
+        <div class="field"><label>Google Place ID</label><input type="text" id="set-gPlaceId" placeholder="ChIJ… (find via Google's Place ID Finder)"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost" onclick="saveGoogleApi()" style="flex:1">Save Credentials</button>
+          <button class="btn-primary" onclick="syncGoogle()" style="flex:1" id="g-sync-btn">↻ Sync from Google Now</button>
+        </div>
+        <div id="g-sync-status" style="margin-top:12px;padding:12px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6">Enter your API key + Place ID, save, then Sync. We'll pull your live star rating, review count, and latest reviews — and refresh them automatically every 6 hours. <strong>The API key stays on the server and is never exposed to visitors.</strong></div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Rating</th><th>Author</th><th>Review</th><th>Date</th><th>Featured</th><th>Status</th><th></th></tr></thead><tbody id="reviews-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-blog">
+      <div class="topbar">
+        <div><div class="page-title">Blog</div><div class="page-sub">Publish SEO content. Latest posts show on the homepage; each post gets its own optimized page.</div></div>
+        <div class="topbar-actions">
+          <button class="btn-ghost" onclick="window.open('/blog','_blank')">↗ View blog</button>
+          <button class="btn-ghost" onclick="openImportModal()">⇪ Import JSON</button>
+          <button class="btn-primary" onclick="openPostModal()">+ New Post</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Published</th><th></th></tr></thead><tbody id="blog-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-seo">
+      <div class="topbar"><div><div class="page-title">SEO Tools</div><div class="page-sub">For the marketing &amp; SEO team — meta defaults, keywords, local SEO, and the AI writer</div></div></div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>🌐 Global SEO</h3>
+          <div class="field"><label>Default homepage title</label><input type="text" id="seo-title"></div>
+          <div class="field"><label>Title template (%s = page name)</label><input type="text" id="seo-template" placeholder="%s · District Cure Dispensary"></div>
+          <div class="field"><label>Default meta description</label><textarea id="seo-desc" rows="3"></textarea></div>
+          <div class="field"><label>Primary keywords (comma-separated)</label><textarea id="seo-keywords" rows="2" placeholder="dispensary washington dc, weed delivery dc, ..."></textarea></div>
+          <div class="field"><label>Social share image URL (1200×630)</label><input type="text" id="seo-ogimage" placeholder="https://…/share.jpg"></div>
+          <button class="btn-primary" onclick="saveSeoGlobal()" style="width:100%;margin-top:6px">Save Global SEO</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>📍 Local SEO &amp; Citations</h3>
+          <div class="field"><label>Business type (schema.org)</label>
+            <select id="seo-biztype"><option value="Store">Store</option><option value="LocalBusiness">LocalBusiness</option><option value="HealthAndBeautyBusiness">HealthAndBeautyBusiness</option></select>
+          </div>
+          <div class="field"><label>Service areas / neighborhoods (comma-separated)</label><textarea id="seo-areas" rows="3" placeholder="Columbia Heights, Petworth, Shaw, Howard University, …"></textarea></div>
+          <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:10px">These power your local business structured data (helps Google/Apple Maps + “near me” searches). Your name, address &amp; phone are managed in <a href="#" onclick="showPage('settings');return false" style="color:var(--gold3)">Settings → Store Info</a> — keep them identical to your Google/Yelp listings for citation consistency.</div>
+          <button class="btn-primary" onclick="saveSeoLocal()" style="width:100%">Save Local SEO</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🔎 Search Console Verification</h3>
+          <div class="field"><label>Google Search Console token</label><input type="text" id="seo-gsc" placeholder="content value from the meta tag"></div>
+          <div class="field"><label>Bing Webmaster token</label><input type="text" id="seo-bing"></div>
+          <button class="btn-primary" onclick="saveSeoVerify()" style="width:100%">Save Verification</button>
+          <div style="margin-top:12px;padding:11px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6">Paste only the token (the <code>content="…"</code> value). We add the meta tag site-wide for you. Your sitemap is at <strong>/sitemap.xml</strong>.</div>
+        </div>
+
+        <div class="settings-card">
+          <h3>🤖 AI Blog Writer</h3>
+          <div class="field"><label>AI provider</label>
+            <select id="seo-aiprovider" onchange="updateAiHint()">
+              <option value="pollinations">Free · NO signup, no key (default)</option>
+              <option value="openai">OpenAI / ChatGPT — paid (your $ balance)</option>
+              <option value="gemini">Google Gemini — free (needs free key)</option>
+              <option value="groq">Groq (Llama) — free (needs free key)</option>
+              <option value="anthropic">Anthropic Claude — paid</option>
+            </select>
+          </div>
+          <div class="field"><label>OpenAI / ChatGPT key <span style="color:var(--gold3)">· your account</span></label><input type="password" id="seo-openaikey" placeholder="sk-… from platform.openai.com"></div>
+          <div class="field"><label>Google Gemini key <span style="color:var(--green4)">· free</span></label><input type="password" id="seo-geminikey" placeholder="free at aistudio.google.com — no credit card"></div>
+          <div class="field"><label>Groq key <span style="color:var(--green4)">· free</span></label><input type="password" id="seo-groqkey" placeholder="free at console.groq.com"></div>
+          <div class="field"><label>Anthropic key <span style="color:var(--text-dim)">· paid</span></label><input type="password" id="seo-aikey" placeholder="sk-ant-… (optional)"></div>
+          <div class="field"><label>Text model override (optional)</label><input type="text" id="seo-aimodel" placeholder="blank = default (OpenAI uses gpt-4o-mini)"></div>
+          <div class="field" style="margin-top:6px"><label>🖼️ Image source</label>
+            <select id="seo-imageprovider">
+              <option value="pollinations">Free — Pollinations (no key, $0)</option>
+              <option value="openai">OpenAI DALL·E — paid (~$0.08/image, best quality)</option>
+            </select>
+          </div>
+          <div class="toggle-row" style="margin-top:4px">
+            <div><div class="tr-label">Auto-create a cover image on AI draft</div><div class="tr-sub">Generates a unique image for each AI-written post, using the image source above.</div></div>
+            <label class="switch"><input type="checkbox" id="seo-autoimage"><span class="slider"></span></label>
+          </div>
+          <button class="btn-primary" onclick="saveSeoAi()" style="width:100%;margin-top:10px">Save AI Settings</button>
+          <div id="ai-hint" style="margin-top:12px;padding:11px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-customers">
+      <div class="topbar">
+        <div><div class="page-title">Customers</div><div class="page-sub">Customer database with loyalty + order history</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar"><h3 id="cust-count">Customers</h3><div class="table-toolbar-tools"><input type="text" id="cust-search" placeholder="Search name, phone…" oninput="renderCustomers()"></div></div>
+        <table><thead><tr><th>Customer</th><th>Phone</th><th>Points</th><th>Tier</th><th>Orders</th><th>Spent</th><th>Last Order</th><th></th></tr></thead><tbody id="cust-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-drivers">
+      <div class="topbar">
+        <div><div class="page-title">Drivers</div><div class="page-sub">Active delivery drivers + their current orders</div></div>
+        <div class="topbar-actions"><button class="btn-primary" onclick="openDriverModal()">+ Add Driver</button></div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Driver</th><th>Phone</th><th>Vehicle</th><th>Status</th><th>Current Order</th><th>Today</th><th>Rating</th><th></th></tr></thead><tbody id="drv-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-staff">
+      <div class="topbar">
+        <div><div class="page-title">Staff</div><div class="page-sub">Team members</div></div>
+        <div class="topbar-actions"><button class="btn-primary" onclick="openStaffModal()">+ Add Staff</button></div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Phone</th><th>Status</th><th></th></tr></thead><tbody id="staff-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <div class="page" id="page-users">
+      <div class="topbar">
+        <div><div class="page-title">Team Logins</div><div class="page-sub">Create login accounts for your team. Editors see the marketing tools (Blog, SEO, Reviews, Specials, Promos); Owners see everything.</div></div>
+        <div class="topbar-actions"><button class="btn-primary" onclick="openUserModal()">+ Add User</button></div>
+      </div>
+      <div class="table-card">
+        <table><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Created</th><th></th></tr></thead><tbody id="users-tbody"></tbody></table>
+      </div>
+      <div style="margin-top:14px;padding:13px 16px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6">
+        <strong style="color:var(--gold3)">Note:</strong> the Editor role hides the operational sections (Orders, Customers, Settings, etc.) from the menu so marketers get a focused workspace. Only give accounts to people you trust. Want stricter hard limits at the data level? Ask and we’ll add them.
+      </div>
+    </div>
+
+    <div class="page" id="page-analytics">
+      <div class="topbar"><div><div class="page-title">Analytics</div><div class="page-sub">Revenue + category breakdown</div></div></div>
+      <div class="kpi-grid" id="analytics-kpis"></div>
+      <div class="chart-card"><div class="chart-h"><div><h3>Sales by Category</h3></div></div><div id="cat-bars"></div></div>
+      <div class="chart-card"><div class="chart-h"><div><h3>Revenue · 7-Day Trend</h3></div></div><div class="chart-bars" id="analytics-chart-bars"></div></div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="topbar"><div><div class="page-title">Settings</div><div class="page-sub">Store info, pricing, security</div></div></div>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>🎨 Brand Logo</h3>
+          <div class="img-picker">
+            <div class="img-preview" id="logo-preview" style="background:#0c1118">🏷️</div>
+            <div class="img-controls">
+              <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="uploadBrandLogo(this)">
+              <div class="img-hint">Upload your company logo (PNG with transparent background works best). It’s used in the site header, the app/home-screen icon, and the social share image. Max 10MB.</div>
+              <div id="logo-status" style="font-size:12px;color:var(--text-dim)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h3>🏪 Store Information</h3>
+          <div class="field"><label>Store Name</label><input type="text" id="set-storeName"></div>
+          <div class="field-row">
+            <div class="field"><label>Phone</label><input type="text" id="set-phone"></div>
+            <div class="field"><label>Email</label><input type="email" id="set-email"></div>
+          </div>
+          <div class="field"><label>Street Address</label><input type="text" id="set-street"></div>
+          <div class="field-row-3">
+            <div class="field"><label>City</label><input type="text" id="set-city"></div>
+            <div class="field"><label>State</label><input type="text" id="set-state"></div>
+            <div class="field"><label>Zip</label><input type="text" id="set-zip"></div>
+          </div>
+          <button class="btn-primary" onclick="saveStoreInfo()" style="width:100%;margin-top:6px">Save Store Info</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>💰 Pricing & Fees</h3>
+          <div class="field-row">
+            <div class="field"><label>Tax Rate (%)</label><input type="number" id="set-tax" step="0.1"></div>
+            <div class="field"><label>Loyalty pts / $</label><input type="number" id="set-loyalty"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Delivery Fee ($)</label><input type="number" id="set-delFee" step="0.5"></div>
+            <div class="field"><label>Free Delivery Min ($)</label><input type="number" id="set-freeMin"></div>
+          </div>
+          <div class="field"><label>Dutchie Slug</label><input type="text" id="set-dutchieSlug"></div>
+          <div class="field"><label>Dutchie Order URL</label><input type="text" id="set-dutchieUrl"></div>
+          <button class="btn-primary" onclick="savePricing()" style="width:100%;margin-top:6px">Save Pricing</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🧾 Menu Display</h3>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Show in-house menu on storefront</div>
+              <div class="tr-sub">Off = customers only see your embedded <strong>Dutchie</strong> menu. Turn on once the in-house catalog matches your Dutchie products.</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="set-localMenu"><span class="slider"></span></label>
+          </div>
+          <div id="menu-mode-status" style="padding:11px 14px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:12px"></div>
+          <button class="btn-primary" onclick="saveMenuDisplay()" style="width:100%">Save Menu Display</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🛒 Shopping Cart</h3>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Show District Cure cart on storefront</div>
+              <div class="tr-sub">Off = the local 🛒 Cart button + checkout flow are hidden. Customers use only Dutchie's cart inside the embedded menu — avoids two-cart confusion. Turn this back on once the Dutchie Plus API lands and orders sync between systems.</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="set-localCart"><span class="slider"></span></label>
+          </div>
+          <div id="cart-mode-status" style="padding:11px 14px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:12px"></div>
+          <button class="btn-primary" onclick="saveCartDisplay()" style="width:100%">Save Cart Display</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🎁 Loyalty &amp; Rewards</h3>
+          <div class="toggle-row">
+            <div>
+              <div class="tr-label">Show Earn Points / Rewards section</div>
+              <div class="tr-sub">Off = the "Earn Points, Unlock Perks" tier display and the loyalty mention in the How-It-Works section are hidden from the storefront. Turn on once a real loyalty program is live and account signup works.</div>
+            </div>
+            <label class="switch"><input type="checkbox" id="set-loyalty"><span class="slider"></span></label>
+          </div>
+          <div id="loyalty-mode-status" style="padding:11px 14px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:12px"></div>
+          <button class="btn-primary" onclick="saveLoyaltyDisplay()" style="width:100%">Save Loyalty Display</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🕒 Business Hours</h3>
+          <div id="hours-grid" style="display:flex;flex-direction:column;gap:8px"></div>
+          <button class="btn-primary" onclick="saveHours()" style="width:100%;margin-top:14px">Save Hours</button>
+        </div>
+
+        <div class="settings-card">
+          <h3>🔒 Security</h3>
+          <div class="field"><label>Current Password</label><input type="password" id="pwd-current"></div>
+          <div class="field"><label>New Password (6+ chars)</label><input type="password" id="pwd-new"></div>
+          <div class="field"><label>Confirm New Password</label><input type="password" id="pwd-confirm"></div>
+          <button class="btn-primary" onclick="changePassword()" style="width:100%">Change Password</button>
+          <div style="margin-top:18px;padding:14px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.6">
+            <strong style="color:var(--gold3)">Heads up:</strong> Your session is signed with an httpOnly cookie valid for 12 hours. Sessions are stored in memory — restarting the server logs everyone out.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="m-product">
+  <div class="modal wide">
+    <div class="modal-h"><h3 id="m-product-title">Add Product</h3><button class="modal-x" onclick="closeModal('m-product')">×</button></div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Image</label>
+        <div class="img-picker">
+          <div class="img-preview" id="prod-img-preview">📷</div>
+          <div class="img-controls">
+            <input type="text" id="prod-image" placeholder="Image URL (or upload below)" oninput="updateImgPreview()">
+            <input type="file" id="prod-img-file" accept="image/*" onchange="uploadProductImage(this)">
+            <div class="img-hint">JPG / PNG / WEBP / GIF · max 10MB · uploads served from /uploads/</div>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:-4px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px">
+        <label style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+          <span>🎨 AI image prompt <span style="color:var(--text-dim);font-weight:400;font-size:11px">— tweak below, then generate</span></span>
+          <button type="button" class="btn-ghost" id="prod-aiprompt-refresh" onclick="refreshProductAiPrompt()" style="padding:4px 10px;font-size:10.5px" title="Rebuild prompt from name/category/description">↻ Auto-fill</button>
+        </label>
+        <textarea id="prod-aiprompt" rows="3" style="width:100%;font-size:12.5px;line-height:1.5;background:var(--card);color:var(--cream);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-family:var(--font-body);resize:vertical" placeholder="Describe the exact shot you want. e.g. &ldquo;a dense purple cannabis nug on dark slate, macro, trichomes visible, indica coloring&rdquo;"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+          <button type="button" class="btn-primary" id="prod-aiimg-btn" onclick="genProductImage()" style="padding:9px 18px;font-size:11.5px">🎨 Generate</button>
+          <span id="prod-aiimg-status" style="font-size:11px;color:var(--text-dim)"></span>
+          <span style="margin-left:auto;font-size:10.5px;color:var(--text-dim)">Provider: <strong id="prod-aiimg-provider">Free (Pollinations)</strong> <a href="#" onclick="event.preventDefault();openModal('m-settings');switchAdminPage('seo');" style="color:var(--gold3)">Change</a></span>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Name *</label><input type="text" id="prod-name"></div>
+        <div class="field"><label>Brand</label><input type="text" id="prod-brand"></div>
+      </div>
+      <div class="field-row-3">
+        <div class="field"><label>Category</label>
+          <select id="prod-category"><option>Flower</option><option>Pre-Roll</option><option>Vaporizers</option><option>Edible</option><option>Concentrate</option><option>Tincture</option><option>Topical</option><option>Accessory</option></select>
+        </div>
+        <div class="field"><label>Strain</label>
+          <select id="prod-strain"><option value="indica">Indica</option><option value="sativa">Sativa</option><option value="hybrid" selected>Hybrid</option><option value="cbd">CBD</option><option value="">N/A</option></select>
+        </div>
+        <div class="field"><label>Weight / Size</label><input type="text" id="prod-weight" placeholder="1/8 oz, 1g, etc"></div>
+      </div>
+      <div class="field-row-3">
+        <div class="field"><label>Price ($) *</label><input type="number" id="prod-price" step="0.01"></div>
+        <div class="field"><label>Compare-at ($)</label><input type="number" id="prod-compareAt" step="0.01"></div>
+        <div class="field"><label>Stock Qty</label><input type="number" id="prod-quantity"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>THC</label><input type="text" id="prod-thc" placeholder="THC 24.5%"></div>
+        <div class="field"><label>CBD</label><input type="text" id="prod-cbd" placeholder="CBD <1%"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Badge</label><select id="prod-badge"><option value="">None</option><option value="new">New</option><option value="hot">Hot</option><option value="sale">Sale</option></select></div>
+        <div class="field"><label>Available</label><select id="prod-available"><option value="true">Yes — show in store</option><option value="false">No — hidden</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="prod-description" rows="4" placeholder="Strain notes, terpene profile, effects, dosing…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-product')">Cancel</button>
+      <button class="btn-danger" id="m-product-delete" onclick="deleteProduct()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-csv-import">
+  <div class="modal">
+    <div class="modal-h"><h3>📥 Import Inventory from CSV</h3><button class="modal-x" onclick="closeModal('m-csv-import')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.55;margin-bottom:14px">
+        Export your inventory from Dutchie's dashboard as CSV and upload it here. We'll upsert products by name — existing products get updated (price + stock refreshed), new ones get created. Images and per-product edits are preserved when the CSV doesn't override them.
+      </p>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:16px">
+        <strong style="color:var(--cream);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Auto-detected columns</strong>
+        <div style="margin-top:6px">Name · Brand · Category · Strain · Price · Stock/Quantity · THC · CBD · Weight/Size · Description · Image URL. Any header name variant works (e.g. "Product Name", "Unit Price", "On Hand").</div>
+      </div>
+      <div class="field">
+        <label>CSV File</label>
+        <input type="file" id="csv-import-file" accept=".csv,text/csv,text/plain">
+      </div>
+      <div id="csv-import-result" style="margin-top:14px"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-csv-import')">Close</button>
+      <button class="btn-primary" id="csv-import-submit" onclick="submitCsvImport()">Import CSV</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-order">
+  <div class="modal">
+    <div class="modal-h"><h3 id="m-order-title">Order Details</h3><button class="modal-x" onclick="closeModal('m-order')">×</button></div>
+    <div class="modal-body" id="m-order-body"></div>
+    <div class="modal-foot"><button class="btn-ghost" onclick="closeModal('m-order')">Close</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-driver">
+  <div class="modal">
+    <div class="modal-h"><h3>Add Driver</h3><button class="modal-x" onclick="closeModal('m-driver')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Name *</label><input type="text" id="drv-name"></div>
+      <div class="field"><label>Phone *</label><input type="text" id="drv-phone"></div>
+      <div class="field"><label>Vehicle</label><input type="text" id="drv-vehicle" placeholder="Toyota Prius · DC-1A2B3"></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" onclick="closeModal('m-driver')">Cancel</button><button class="btn-primary" onclick="saveDriver()">Save Driver</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-promo">
+  <div class="modal">
+    <div class="modal-h"><h3 id="m-promo-title">Add Promo</h3><button class="modal-x" onclick="closeModal('m-promo')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Name *</label><input type="text" id="prm-name"></div>
+      <div class="field"><label>Code *</label><input type="text" id="prm-code" placeholder="WELCOME15" style="text-transform:uppercase"></div>
+      <div class="field-row">
+        <div class="field"><label>Type</label><select id="prm-type"><option value="percent">% Discount</option><option value="fixed">$ Off</option><option value="shipping">Free Shipping</option></select></div>
+        <div class="field"><label>Value</label><input type="number" id="prm-value" step="0.01"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Expires</label><input type="date" id="prm-expires"></div>
+        <div class="field"><label>Status</label><select id="prm-status"><option value="active">Active</option><option value="paused">Paused</option></select></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-promo')">Cancel</button>
+      <button class="btn-danger" id="m-promo-delete" onclick="deletePromo()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="savePromo()">Save Promo</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-special">
+  <div class="modal wide">
+    <div class="modal-h"><h3 id="m-special-title">Add Special</h3><button class="modal-x" onclick="closeModal('m-special')">×</button></div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Banner Image</label>
+        <div class="img-picker">
+          <div class="img-preview" id="sp-img-preview">🎁</div>
+          <div class="img-controls">
+            <input type="text" id="sp-image" placeholder="Image URL (or upload below)" oninput="updateSpecialPreview()">
+            <input type="file" id="sp-img-file" accept="image/*" onchange="uploadSpecialImage(this)">
+            <div class="img-hint">Recommended 16:9 ratio, ~1200×675. JPG / PNG / WEBP · max 10MB</div>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Title *</label><input type="text" id="sp-title" placeholder="20% off all flower today"></div>
+        <div class="field"><label>CTA Button Label</label><input type="text" id="sp-ctaLabel" placeholder="Shop Now"></div>
+      </div>
+      <div class="field"><label>Short description (on the card)</label><textarea id="sp-subtitle" rows="2" placeholder="One or two lines shown on the homepage card."></textarea></div>
+      <div class="field"><label>Full details (shown in the pop-up)</label><textarea id="sp-details" rows="4" placeholder="The longer write-up customers see when they tap the deal — terms, what's included, how to redeem, etc."></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Link / CTA URL</label><input type="text" id="sp-ctaUrl" placeholder="/#shop  or  https://dutchie.com/..."></div>
+        <div class="field"><label>Optional promo code</label><input type="text" id="sp-promoCode" placeholder="DAILY20" style="text-transform:uppercase"></div>
+      </div>
+
+      <h4 style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold3);margin:18px 0 10px">Schedule</h4>
+      <div class="field-row">
+        <div class="field"><label>Cadence</label>
+          <select id="sp-cadence" onchange="onCadenceChange()">
+            <option value="one-off">One-off (date range)</option>
+            <option value="daily">Daily (every day)</option>
+            <option value="weekly">Weekly (specific weekdays)</option>
+            <option value="monthly">Monthly (specific days of month)</option>
+          </select>
+        </div>
+        <div class="field"><label>Priority (higher = shown first)</label><input type="number" id="sp-priority" value="100"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Starts</label><input type="datetime-local" id="sp-startAt"></div>
+        <div class="field"><label>Ends</label><input type="datetime-local" id="sp-endAt"></div>
+      </div>
+      <div class="field" id="sp-dow-wrap" style="display:none">
+        <label>Active on weekdays</label>
+        <div id="sp-dow" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div class="field" id="sp-dom-wrap" style="display:none">
+        <label>Active on days of month (comma-separated, e.g. 1, 15)</label>
+        <input type="text" id="sp-dom" placeholder="1, 15, 30">
+      </div>
+
+      <h4 style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold3);margin:18px 0 10px">Publishing</h4>
+      <div class="field-row">
+        <div class="field"><label>Status</label>
+          <select id="sp-status">
+            <option value="draft">Draft — not shown on site</option>
+            <option value="published">Published — live (subject to schedule)</option>
+            <option value="archived">Archived — hidden, kept for stats</option>
+          </select>
+        </div>
+        <div class="field"><label>&nbsp;</label>
+          <div style="padding:11px 14px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text-dim);line-height:1.5" id="sp-status-hint">
+            Drafts stay private. Published specials only show during their scheduled window.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-special')">Cancel</button>
+      <button class="btn-danger" id="m-special-delete" onclick="deleteSpecial()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="saveSpecial()">Save Special</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-review">
+  <div class="modal">
+    <div class="modal-h"><h3 id="m-review-title">Add Review</h3><button class="modal-x" onclick="closeModal('m-review')">×</button></div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Author name *</label><input type="text" id="rv-author" placeholder="e.g. Marcus T."></div>
+        <div class="field"><label>Rating</label>
+          <select id="rv-rating"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Review text *</label><textarea id="rv-text" rows="4" placeholder="Paste the customer's review here…"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Date</label><input type="date" id="rv-date"></div>
+        <div class="field"><label>Source</label><select id="rv-source"><option value="google">Google</option><option value="yelp">Yelp</option><option value="instagram">Instagram</option><option value="instore">In-store</option></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Featured</label><select id="rv-featured"><option value="false">No</option><option value="true">Yes — show first</option></select></div>
+        <div class="field"><label>Status</label><select id="rv-status"><option value="published">Published</option><option value="hidden">Hidden</option></select></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-review')">Cancel</button>
+      <button class="btn-danger" id="m-review-delete" onclick="deleteReview()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="saveReview()">Save Review</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-post">
+  <div class="modal wide">
+    <div class="modal-h"><h3 id="m-post-title">New Post</h3><button class="modal-x" onclick="closeModal('m-post')">×</button></div>
+    <div class="modal-body">
+      <div style="background:var(--surface);border:1px solid rgba(184,131,42,.25);border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--gold3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">✨ AI Assist</div>
+        <div class="field-row">
+          <div class="field"><label>Topic / idea</label><input type="text" id="ai-topic" placeholder="e.g. Best edibles for first-timers"></div>
+          <div class="field"><label>Tone</label><input type="text" id="ai-tone" placeholder="friendly, expert…"></div>
+        </div>
+        <div class="field"><label>Target keywords (optional)</label><input type="text" id="ai-keywords" placeholder="edibles dc, low dose gummies"></div>
+        <button class="btn-ghost" id="ai-draft-btn" onclick="aiDraft()" style="width:100%">✨ Generate draft with AI</button>
+        <div id="ai-status" style="font-size:11px;color:var(--text-dim);margin-top:8px"></div>
+      </div>
+      <div class="field">
+        <label>Cover image</label>
+        <div class="img-picker">
+          <div class="img-preview" id="post-img-preview">🖼️</div>
+          <div class="img-controls">
+            <input type="text" id="post-cover" placeholder="Image URL (or upload / generate)" oninput="updatePostImgPreview()">
+            <input type="file" id="post-img-file" accept="image/*" onchange="uploadPostImage(this)">
+            <button class="btn-ghost" id="post-aiimg-btn" onclick="genPostImage()" type="button" style="font-size:12px">🎨 Generate image with AI (free)</button>
+            <div class="img-hint">16:9 works best · max 10MB · AI images are free (no key needed)</div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Title *</label><input type="text" id="post-title" oninput="if(!EDITING_POST)syncSlug()"></div>
+      <div class="field-row">
+        <div class="field"><label>URL slug</label><input type="text" id="post-slug" placeholder="auto-generated from title"></div>
+        <div class="field"><label>Category</label><input type="text" id="post-category" list="post-cat-list" placeholder="Education"><datalist id="post-cat-list"></datalist></div>
+      </div>
+      <div class="field"><label>Excerpt (short summary)</label><textarea id="post-excerpt" rows="2"></textarea></div>
+      <div class="field"><label>Body (HTML — use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;…)</label><textarea id="post-body" rows="12" style="font-family:var(--font-mono);font-size:12px"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Tags (comma-separated)</label><input type="text" id="post-tags"></div>
+        <div class="field"><label>Author</label><input type="text" id="post-author" placeholder="District Cure"></div>
+      </div>
+      <h4 style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold3);margin:16px 0 10px">SEO</h4>
+      <div class="field"><label>Meta title (≤60 chars)</label><input type="text" id="post-metatitle"></div>
+      <div class="field"><label>Meta description (≤155 chars)</label><textarea id="post-metadesc" rows="2"></textarea></div>
+      <div class="field"><label>Focus keywords (comma-separated)</label><input type="text" id="post-keywords"></div>
+      <div class="field-row">
+        <div class="field"><label>Status</label><select id="post-status"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></div>
+        <div class="field"><label>Publish date</label><input type="date" id="post-date"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-post')">Cancel</button>
+      <button class="btn-danger" id="m-post-delete" onclick="deletePost()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="savePost()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-import">
+  <div class="modal">
+    <div class="modal-h"><h3>Import Blog Posts</h3><button class="modal-x" onclick="closeModal('m-import')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:12px">Upload or paste a JSON file of posts from your previous site. We auto-map common fields (title, content/body, excerpt, category, tags, image, date). Accepts an array <code>[ … ]</code> or <code>{ "posts": [ … ] }</code>.</p>
+      <div class="field"><label>Upload .json file</label><input type="file" id="import-file" accept=".json,application/json" onchange="loadImportFile(this)"></div>
+      <div class="field"><label>…or paste JSON</label><textarea id="import-json" rows="10" style="font-family:var(--font-mono);font-size:12px" placeholder='[{"title":"...","content":"...","category":"..."}]'></textarea></div>
+      <div id="import-status" style="font-size:12px;color:var(--text-dim)"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-import')">Cancel</button>
+      <button class="btn-primary" onclick="runImport()">Import Posts</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-staff">
+  <div class="modal">
+    <div class="modal-h"><h3>Add Staff</h3><button class="modal-x" onclick="closeModal('m-staff')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Name *</label><input type="text" id="stf-name"></div>
+      <div class="field"><label>Role</label><select id="stf-role"><option value="budtender">Budtender</option><option value="manager">Manager</option><option value="driver">Driver</option><option value="admin">Admin</option></select></div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input type="email" id="stf-email"></div>
+        <div class="field"><label>Phone</label><input type="text" id="stf-phone"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" onclick="closeModal('m-staff')">Cancel</button><button class="btn-primary" onclick="saveStaff()">Save Staff</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-driver-assign">
+  <div class="modal">
+    <div class="modal-h"><h3>Assign Driver</h3><button class="modal-x" onclick="closeModal('m-driver-assign')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Order</label><input type="text" id="asg-order" readonly></div>
+      <div class="field"><label>Choose Driver</label><select id="asg-driver"></select></div>
+    </div>
+    <div class="modal-foot"><button class="btn-ghost" onclick="closeModal('m-driver-assign')">Cancel</button><button class="btn-primary" onclick="confirmAssignDriver()">Assign</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="m-user">
+  <div class="modal">
+    <div class="modal-h"><h3 id="m-user-title">Add User</h3><button class="modal-x" onclick="closeModal('m-user')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Full name</label><input type="text" id="usr-name" placeholder="e.g. Jordan (Marketing)"></div>
+      <div class="field"><label>Username *</label><input type="text" id="usr-username" placeholder="they log in with this" autocomplete="off"></div>
+      <div class="field"><label id="usr-pwd-label">Password * (min 6 chars)</label><input type="text" id="usr-password" placeholder="share this with them securely" autocomplete="new-password"></div>
+      <div class="field"><label>Role</label>
+        <select id="usr-role">
+          <option value="editor">Editor — marketing tools only (Blog, SEO, Reviews, Specials, Promos)</option>
+          <option value="owner">Owner — full access to everything</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeModal('m-user')">Cancel</button>
+      <button class="btn-danger" id="m-user-delete" onclick="deleteUser()" style="display:none">Delete</button>
+      <button class="btn-primary" onclick="saveUser()">Save User</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-stack"></div>
+
+<script src="/socket.io/socket.io.js" onerror="console.log('Socket.io not available')"></script>
+<script>
+let ME = null;
+let STATE = { products:[], orders:[], customers:[], drivers:[], promos:[], specials:[], reviews:[], posts:[], staff:[], users:[], settings:{}, stats:{} };
+let CURRENT_PAGE = 'dashboard';
+let EDITING_PRODUCT = null, EDITING_PROMO = null, EDITING_SPECIAL = null, EDITING_REVIEW = null, EDITING_POST = null, EDITING_USER = null, ASSIGNING_ORDER = null;
+let socket = null;
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, { credentials:'include', headers:{ 'Content-Type':'application/json', ...(opts.headers||{}) }, ...opts });
+  if (res.status === 401) { ME = null; showLogin(); throw new Error('Unauthorized'); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+function showLogin() { document.getElementById('login').style.display='flex'; document.getElementById('app').classList.remove('ready'); }
+function showApp() { document.getElementById('login').style.display='none'; document.getElementById('app').classList.add('ready'); }
+
+async function doLogin() {
+  const username = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pwd').value;
+  const err = document.getElementById('login-error');
+  err.classList.remove('show');
+  if (!username || !password) { err.textContent='Username and password are required.'; err.classList.add('show'); return; }
+  try {
+    const r = await api('/api/auth/login', { method:'POST', body: JSON.stringify({ username, password }) });
+    ME = r.user; showApp(); setUserUI(); initSocket(); await loadAll();
+  } catch (e) { err.textContent = e.message || 'Login failed'; err.classList.add('show'); }
+}
+
+async function doLogout() {
+  await api('/api/auth/logout', { method:'POST' }).catch(()=>{});
+  ME = null; showLogin();
+}
+
+async function bootstrap() {
+  try { const r = await api('/api/auth/me'); ME = r.user; showApp(); setUserUI(); initSocket(); await loadAll(); }
+  catch { showLogin(); }
+}
+
+function setUserUI() {
+  if (!ME) return;
+  document.getElementById('side-username').textContent = ME.name || ME.username;
+  document.getElementById('side-role').textContent = ME.role === 'owner' ? 'Owner' : 'Editor';
+  document.getElementById('side-avatar').textContent = (ME.name || ME.username || 'A').charAt(0).toUpperCase();
+  applyRoleGating();
+}
+const OWNER_PAGES = ['orders','inventory','customers','drivers','staff','analytics','users','settings'];
+function applyRoleGating() {
+  const isOwner = ME && ME.role === 'owner';
+  document.querySelectorAll('.nav-item[data-owner]').forEach(el => { el.style.display = isOwner ? '' : 'none'; });
+  // If a non-owner is somehow on an owner-only page, send them to the dashboard
+  if (!isOwner && OWNER_PAGES.includes(CURRENT_PAGE)) showPage('dashboard');
+}
+
+document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', () => showPage(el.dataset.page)));
+function showPage(name) {
+  // Guard: editors can't open owner-only pages
+  if (ME && ME.role !== 'owner' && OWNER_PAGES.includes(name)) name = 'dashboard';
+  CURRENT_PAGE = name;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.page === name));
+  document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.id === `page-${name}`));
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'orders') renderOrders();
+  if (name === 'inventory') renderInventory();
+  if (name === 'promos') renderPromos();
+  if (name === 'specials') renderSpecials();
+  if (name === 'reviews') renderReviews();
+  if (name === 'blog') renderBlog();
+  if (name === 'seo') renderSeo();
+  if (name === 'users') renderUsers();
+  if (name === 'customers') renderCustomers();
+  if (name === 'drivers') renderDrivers();
+  if (name === 'staff') renderStaff();
+  if (name === 'analytics') renderAnalytics();
+  if (name === 'settings') renderSettings();
+}
+
+async function loadAll() {
+  try {
+    const [stats, products, orders, customers, drivers, promos, specials, reviews, posts, staff, settings] = await Promise.all([
+      api('/api/admin/stats'), api('/api/admin/products'), api('/api/admin/orders'),
+      api('/api/admin/customers'), api('/api/admin/drivers'), api('/api/admin/promos'),
+      api('/api/admin/specials'), api('/api/admin/reviews'), api('/api/admin/posts'), api('/api/admin/staff'), api('/api/admin/settings'),
+    ]);
+    STATE.stats=stats.stats; STATE.products=products.products; STATE.orders=orders.orders;
+    STATE.customers=customers.customers; STATE.drivers=drivers.drivers; STATE.promos=promos.promos;
+    STATE.specials=specials.specials; STATE.reviews=reviews.reviews; STATE.posts=posts.posts; STATE.staff=staff.staff; STATE.settings=settings.settings;
+    if (ME && ME.role === 'owner') { try { const u = await api('/api/admin/users'); STATE.users = u.users; } catch {} }
+    showPage(CURRENT_PAGE);
+  } catch (e) { console.error(e); toast('Failed to load data: ' + e.message, 'err'); }
+}
+
+function renderDashboard() {
+  const s = STATE.stats;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Today's Orders</div><div class="kpi-val">${s.todayOrders||0}</div></div>
+    <div class="kpi gold"><div class="kpi-label">Today's Revenue</div><div class="kpi-val">$${(s.todayRevenue||0).toFixed(2)}</div></div>
+    <div class="kpi blue"><div class="kpi-label">Pending Orders</div><div class="kpi-val">${s.pendingOrders||0}</div></div>
+    <div class="kpi purple"><div class="kpi-label">Active Products</div><div class="kpi-val">${s.activeProducts||0}</div></div>
+    <div class="kpi orange"><div class="kpi-label">Low Stock</div><div class="kpi-val">${s.lowStock||0}</div></div>
+    <div class="kpi"><div class="kpi-label">Total Customers</div><div class="kpi-val">${s.totalCustomers||0}</div></div>
+    <div class="kpi"><div class="kpi-label">Active Drivers</div><div class="kpi-val">${s.activeDrivers||0}</div></div>
+    <div class="kpi"><div class="kpi-label">Total Revenue</div><div class="kpi-val">$${(s.totalRevenue||0).toFixed(2)}</div></div>
+  `;
+  buildChart('chart-bars', s.weekly || [], 'chart-total');
+  const recent = STATE.orders.slice(0, 5);
+  document.getElementById('dash-orders').innerHTML = recent.length
+    ? recent.map(o => orderRow(o, true)).join('')
+    : '<tr><td colspan="8" class="tbl-empty">No orders yet. Customer orders appear here in real time.</td></tr>';
+  const low = STATE.products.filter(p => (p.quantity||0) < 5 && p.available !== false);
+  document.getElementById('dash-low-stock').innerHTML = low.length
+    ? low.map(p => `
+        <tr>
+          <td><div class="tbl-name">${escapeHTML(p.name)}</div><div class="tbl-meta">${escapeHTML(p.brand||'')}</div></td>
+          <td>${escapeHTML(p.category)}</td><td><strong>${p.quantity||0}</strong></td>
+          <td>${p.quantity === 0 ? '<span class="badge b-red">Out</span>' : '<span class="badge b-orange">Low</span>'}</td>
+          <td class="tbl-actions"><button class="btn-ghost" onclick="editProduct('${p.id}')">Edit</button></td>
+        </tr>`).join('')
+    : '<tr><td colspan="5" class="tbl-empty">All products well-stocked. 🎉</td></tr>';
+}
+
+function buildChart(targetId, series, totalId) {
+  const el = document.getElementById(targetId); if (!el) return;
+  const max = Math.max(1, ...series.map(d => d.revenue));
+  el.innerHTML = series.map(d => `
+    <div class="bar-col" title="${d.label}: $${d.revenue.toFixed(2)} (${d.orders} orders)">
+      <div class="bar" style="height:${(d.revenue/max)*180+4}px"><div class="bar-tip">$${d.revenue.toFixed(0)}</div></div>
+      <div class="bar-lbl">${d.label}</div>
+    </div>`).join('');
+  if (totalId) {
+    const total = series.reduce((s,d)=>s+d.revenue,0);
+    document.getElementById(totalId).textContent = `$${total.toFixed(2)} this week`;
+  }
+}
+
+const STATUS_BADGES = {
+  pending:['b-orange','Pending'], confirmed:['b-blue','Confirmed'], processing:['b-purple','Processing'],
+  out_for_delivery:['b-gold','Out for delivery'], delivered:['b-green','Delivered'], cancelled:['b-red','Cancelled'],
+};
+function statusBadge(s) { const [c,l] = STATUS_BADGES[s] || ['b-gray', s]; return `<span class="badge ${c}">${l}</span>`; }
+function driverNameFor(driverId) {
+  if (!driverId) return '<span style="color:var(--text-dim)">—</span>';
+  const d = STATE.drivers.find(x => x.id === driverId);
+  return d ? escapeHTML(d.name) : '<span style="color:var(--text-dim)">—</span>';
+}
+function orderRow(o, isDashboard) {
+  const itemCount = (o.items||[]).reduce((s,i)=>s+(i.qty||0),0);
+  return `
+    <tr onclick="viewOrder('${o.id}')" style="cursor:pointer">
+      <td class="mono">${o.id}</td>
+      <td>${escapeHTML(o.customer?.name || 'Guest')}<div class="tbl-meta">${escapeHTML(o.customer?.phone || '')}</div></td>
+      <td>${itemCount} item${itemCount!==1?'s':''}</td>
+      <td><strong>$${(o.total||0).toFixed(2)}</strong></td>
+      <td>${o.fulfillment === 'pickup' ? '🏬 Pickup' : '🚗 Delivery'}</td>
+      <td>${statusBadge(o.status)}</td>
+      ${!isDashboard ? `<td>${driverNameFor(o.driverId)}</td>` : ''}
+      <td>${timeAgo(o.createdAt)}</td>
+      <td class="tbl-actions" onclick="event.stopPropagation()"><button class="btn-ghost" onclick="viewOrder('${o.id}')">View</button></td>
+    </tr>`;
+}
+
+function renderOrders() {
+  const q = (document.getElementById('orders-search')?.value || '').toLowerCase();
+  const stat = document.getElementById('orders-status')?.value || '';
+  const type = document.getElementById('orders-type')?.value || '';
+  let filtered = STATE.orders;
+  if (q) filtered = filtered.filter(o => o.id.toLowerCase().includes(q) || (o.customer?.name||'').toLowerCase().includes(q) || (o.customer?.phone||'').toLowerCase().includes(q));
+  if (stat) filtered = filtered.filter(o => o.status === stat);
+  if (type) filtered = filtered.filter(o => o.fulfillment === type);
+  document.getElementById('orders-count').textContent = `Orders (${filtered.length})`;
+  document.getElementById('orders-tbody').innerHTML = filtered.length
+    ? filtered.map(o => orderRow(o, false)).join('')
+    : '<tr><td colspan="9" class="tbl-empty">No orders match the current filters.</td></tr>';
+}
+
+function viewOrder(id) {
+  const o = STATE.orders.find(x => x.id === id); if (!o) return;
+  document.getElementById('m-order-title').textContent = `Order ${o.id}`;
+  const itemsHtml = (o.items||[]).map(i =>
+    `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+      <div><strong>${escapeHTML(i.name)}</strong> <span style="color:var(--text-dim)">× ${i.qty}</span></div>
+      <div>$${(i.price*i.qty).toFixed(2)}</div>
+    </div>`).join('');
+  document.getElementById('m-order-body').innerHTML = `
+    <div style="display:flex;gap:8px;margin-bottom:14px">${statusBadge(o.status)} <span class="badge b-gray">${o.fulfillment==='pickup'?'🏬 Pickup':'🚗 Delivery'}</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div>
+        <div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Customer</div>
+        <div><strong>${escapeHTML(o.customer?.name || 'Guest')}</strong></div>
+        <div style="color:var(--text-dim);font-size:12px">${escapeHTML(o.customer?.phone || '')}</div>
+        <div style="color:var(--text-dim);font-size:12px">${escapeHTML(o.customer?.email || '')}</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">${o.fulfillment==='pickup'?'Pickup':'Delivery Address'}</div>
+        <div style="color:var(--text-dim);font-size:12px">${o.fulfillment==='pickup'?'Customer will pick up in-store.':[o.address?.street||o.address?.street1, o.address?.city, o.address?.state, o.address?.zip].filter(Boolean).map(escapeHTML).join(', ') || '<em>No address</em>'}</div>
+      </div>
+    </div>
+    ${o.notes ? `<div style="margin-bottom:14px;padding:10px 12px;background:var(--surface);border-radius:8px;font-size:13px"><strong>Note:</strong> ${escapeHTML(o.notes)}</div>` : ''}
+    <div style="background:var(--surface);border-radius:10px;padding:14px;margin-bottom:14px">${itemsHtml}</div>
+    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:3px 0"><span>Subtotal</span><span>$${(o.subtotal||0).toFixed(2)}</span></div>
+    ${o.promoDiscount > 0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--green4);padding:3px 0"><span>Promo (${escapeHTML(o.promoCode||'')})</span><span>−$${o.promoDiscount.toFixed(2)}</span></div>` : ''}
+    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:3px 0"><span>Tax</span><span>$${(o.tax||0).toFixed(2)}</span></div>
+    ${o.delFee>0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-dim);padding:3px 0"><span>Delivery fee</span><span>$${o.delFee.toFixed(2)}</span></div>` : ''}
+    <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;padding:8px 0;border-top:1px solid var(--border);margin-top:6px"><span>Total</span><span>$${(o.total||0).toFixed(2)}</span></div>
+    <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+      <select id="order-status-update" style="flex:1">
+        ${Object.keys(STATUS_BADGES).map(s => `<option value="${s}"${s===o.status?' selected':''}>${STATUS_BADGES[s][1]}</option>`).join('')}
+      </select>
+      <button class="btn-primary" onclick="updateOrderStatus('${o.id}')">Update Status</button>
+      ${o.fulfillment === 'delivery' && o.status !== 'delivered' && o.status !== 'cancelled' ? `<button class="btn-gold" onclick="openAssignDriver('${o.id}')">Assign Driver</button>` : ''}
+    </div>
+  `;
+  openModal('m-order');
+}
+
+async function updateOrderStatus(id) {
+  const status = document.getElementById('order-status-update').value;
+  try { await api(`/api/admin/orders/${id}`, { method:'PATCH', body: JSON.stringify({ status }) });
+    toast('Order status updated', 'ok'); closeModal('m-order'); await refreshOrders(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function openAssignDriver(orderId) {
+  ASSIGNING_ORDER = orderId;
+  document.getElementById('asg-order').value = orderId;
+  const sel = document.getElementById('asg-driver');
+  const avail = STATE.drivers.filter(d => d.status !== 'offline');
+  sel.innerHTML = avail.length
+    ? avail.map(d => `<option value="${d.id}">${escapeHTML(d.name)} (${d.status === 'available' ? '✓ Available' : 'On delivery'})</option>`).join('')
+    : '<option value="">No drivers available</option>';
+  closeModal('m-order'); openModal('m-driver-assign');
+}
+async function confirmAssignDriver() {
+  const driverId = document.getElementById('asg-driver').value;
+  if (!driverId) return;
+  try { await api(`/api/admin/orders/${ASSIGNING_ORDER}/assign-driver`, { method:'POST', body: JSON.stringify({ driverId }) });
+    toast('Driver assigned', 'ok'); closeModal('m-driver-assign'); await refreshOrders(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+async function refreshOrders() {
+  const [o, s, d] = await Promise.all([api('/api/admin/orders'), api('/api/admin/stats'), api('/api/admin/drivers')]);
+  STATE.orders = o.orders; STATE.stats = s.stats; STATE.drivers = d.drivers;
+  if (CURRENT_PAGE === 'orders') renderOrders();
+  if (CURRENT_PAGE === 'dashboard') renderDashboard();
+  if (CURRENT_PAGE === 'drivers') renderDrivers();
+}
+
+function renderInventory() {
+  const q = (document.getElementById('inv-search')?.value || '').toLowerCase();
+  const cat = document.getElementById('inv-cat')?.value || '';
+  const stock = document.getElementById('inv-stock')?.value || '';
+  const cats = [...new Set(STATE.products.map(p => p.category))].filter(Boolean);
+  const catSel = document.getElementById('inv-cat');
+  if (catSel && catSel.options.length - 1 !== cats.length) {
+    catSel.innerHTML = '<option value="">All categories</option>' + cats.map(c => `<option value="${c}"${c===cat?' selected':''}>${c}</option>`).join('');
+  }
+  let list = STATE.products;
+  if (q) list = list.filter(p => p.name.toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q));
+  if (cat) list = list.filter(p => p.category === cat);
+  if (stock === 'low') list = list.filter(p => (p.quantity||0) > 0 && (p.quantity||0) < 5);
+  if (stock === 'out') list = list.filter(p => (p.quantity||0) === 0);
+  if (stock === 'ok')  list = list.filter(p => (p.quantity||0) >= 5);
+  document.getElementById('inv-count').textContent = `Products (${list.length})`;
+  document.getElementById('inv-tbody').innerHTML = list.length ? list.map(p => `
+    <tr>
+      <td>${p.image ? `<img src="${escapeHTML(p.image)}" class="tbl-thumb" alt="" onerror="this.outerHTML='<div class=&quot;tbl-thumb-emoji&quot;>${p.emoji||'🌿'}</div>'">` : `<div class="tbl-thumb-emoji">${p.emoji||'🌿'}</div>`}</td>
+      <td><div class="tbl-name">${escapeHTML(p.name)}</div><div class="tbl-meta">${escapeHTML(p.brand||'')} · ${escapeHTML(p.weight||'')}</div></td>
+      <td>${escapeHTML(p.category)}</td>
+      <td><strong>$${(p.price||0).toFixed(2)}</strong>${p.compareAt ? ` <s style="color:var(--text-dim);font-size:11px">$${p.compareAt}</s>` : ''}</td>
+      <td><strong>${p.quantity||0}</strong></td>
+      <td>${escapeHTML(p.thc||'—')}</td>
+      <td>${p.available === false ? '<span class="badge b-gray">Hidden</span>' : (p.quantity||0) === 0 ? '<span class="badge b-red">Out of stock</span>' : (p.quantity||0) < 5 ? '<span class="badge b-orange">Low</span>' : '<span class="badge b-green">In stock</span>'}</td>
+      <td class="tbl-actions"><button class="btn-ghost" onclick="editProduct('${p.id}')">Edit</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" class="tbl-empty">No products match. Try clearing filters or add a new product.</td></tr>';
+}
+
+function openProductModal() {
+  EDITING_PRODUCT = null;
+  document.getElementById('m-product-title').textContent = 'Add Product';
+  document.getElementById('m-product-delete').style.display = 'none';
+  ['name','brand','price','compareAt','quantity','thc','cbd','weight','description','image'].forEach(k => {
+    const el = document.getElementById(`prod-${k}`); if (el) el.value = '';
+  });
+  document.getElementById('prod-category').value = 'Flower';
+  document.getElementById('prod-strain').value = 'hybrid';
+  document.getElementById('prod-badge').value = '';
+  document.getElementById('prod-available').value = 'true';
+  document.getElementById('prod-aiprompt').value = '';
+  document.getElementById('prod-aiimg-status').textContent = '';
+  updateProductAiProviderLabel();
+  updateImgPreview();
+  openModal('m-product');
+}
+
+// Show which provider will be used, right next to the prompt.
+function updateProductAiProviderLabel() {
+  const el = document.getElementById('prod-aiimg-provider');
+  if (!el) return;
+  const p = STATE.settings?.ai?.imageProvider;
+  el.textContent = p === 'openai' ? 'DALL·E (paid, higher quality)' : 'Free (Pollinations · flux)';
+}
+
+function editProduct(id) {
+  const p = STATE.products.find(x => x.id === id); if (!p) return;
+  EDITING_PRODUCT = id;
+  document.getElementById('m-product-title').textContent = 'Edit Product';
+  document.getElementById('m-product-delete').style.display = '';
+  document.getElementById('prod-name').value = p.name || '';
+  document.getElementById('prod-brand').value = p.brand || '';
+  document.getElementById('prod-category').value = p.category || 'Flower';
+  document.getElementById('prod-strain').value = p.strain || 'hybrid';
+  document.getElementById('prod-weight').value = p.weight || '';
+  document.getElementById('prod-price').value = p.price ?? '';
+  document.getElementById('prod-compareAt').value = p.compareAt ?? '';
+  document.getElementById('prod-quantity').value = p.quantity ?? 0;
+  document.getElementById('prod-thc').value = p.thc || '';
+  document.getElementById('prod-cbd').value = p.cbd || '';
+  document.getElementById('prod-badge').value = p.badge || '';
+  document.getElementById('prod-available').value = p.available === false ? 'false' : 'true';
+  document.getElementById('prod-description').value = p.description || '';
+  document.getElementById('prod-image').value = p.image || '';
+  document.getElementById('prod-aiprompt').value = '';
+  document.getElementById('prod-aiimg-status').textContent = '';
+  updateProductAiProviderLabel();
+  updateImgPreview();
+  openModal('m-product');
+}
+
+function updateImgPreview() {
+  const url = document.getElementById('prod-image').value;
+  const el = document.getElementById('prod-img-preview');
+  if (url) { el.style.backgroundImage = `url("${url.replace(/"/g,'\\"')}")`; el.textContent = ''; }
+  else { el.style.backgroundImage = ''; el.textContent = '📷'; }
+}
+
+async function uploadProductImage(input) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('image', input.files[0]);
+  try {
+    const res = await fetch('/api/admin/upload', { method:'POST', credentials:'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    document.getElementById('prod-image').value = data.url;
+    updateImgPreview();
+    toast('Image uploaded', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+  input.value = '';
+}
+
+// Collect what buildProductPrompt on the server needs from the current form values.
+function collectProductAiFields() {
+  return {
+    name:        document.getElementById('prod-name').value.trim(),
+    category:    document.getElementById('prod-category').value.trim(),
+    description: document.getElementById('prod-description').value.trim(),
+    strain:      document.getElementById('prod-strain').value.trim(),
+    weight:      document.getElementById('prod-weight').value.trim(),
+    brand:       document.getElementById('prod-brand').value.trim(),
+  };
+}
+
+// Fill the prompt textarea from the current name/category/description via the
+// server's buildProductPrompt() so what the admin sees is exactly what the model gets.
+async function refreshProductAiPrompt() {
+  const fields = collectProductAiFields();
+  if (!fields.name) { toast('Enter a product name first', 'err'); return; }
+  try {
+    const r = await api('/api/admin/products/build-prompt', { method:'POST', body: JSON.stringify(fields) });
+    document.getElementById('prod-aiprompt').value = r.prompt;
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+// Generate an AI product image. If the prompt textarea is filled, we send it verbatim;
+// otherwise the server builds one from name/category/description.
+async function genProductImage() {
+  const fields = collectProductAiFields();
+  if (!fields.name) return toast('Enter a product name first', 'err');
+  // If the prompt box is empty, auto-fill it so the admin sees what got sent (transparency).
+  const ta = document.getElementById('prod-aiprompt');
+  if (!ta.value.trim()) {
+    try {
+      const r = await api('/api/admin/products/build-prompt', { method:'POST', body: JSON.stringify(fields) });
+      ta.value = r.prompt;
+    } catch (e) { return toast(e.message, 'err'); }
+  }
+  const prompt = ta.value.trim();
+  const btn = document.getElementById('prod-aiimg-btn');
+  const status = document.getElementById('prod-aiimg-status');
+  const isOpenAI = STATE.settings?.ai?.imageProvider === 'openai';
+  btn.disabled = true;
+  btn.textContent = '🎨 Generating…';
+  status.textContent = isOpenAI ? 'Calling DALL·E…' : 'Free provider — this can take 10–30s.';
+  try {
+    const r = await api('/api/admin/products/ai-image', { method:'POST', body: JSON.stringify({ ...fields, prompt }) });
+    document.getElementById('prod-image').value = r.url;
+    updateImgPreview();
+    status.textContent = '✓ Generated. Not happy? Tweak the prompt and click Generate again.';
+    toast('AI image created', 'ok');
+  } catch (e) {
+    status.textContent = '✕ ' + e.message;
+    toast(e.message, 'err');
+  }
+  finally {
+    btn.disabled = false;
+    btn.textContent = '🎨 Generate';
+  }
+}
+
+// Bulk generate AI images for every catalog product that has no image.
+// Sequential + rate-limit-friendly for the free provider (up to 4s backoff/retry per image).
+async function bulkGenerateMissingImages() {
+  const missing = (STATE.products || []).filter(p => !p.image);
+  if (!missing.length) return toast('All products already have images', 'ok');
+  if (!confirm(`Generate AI images for ${missing.length} products with no photo? This may take ${Math.ceil(missing.length * 8 / 60)}+ minutes (free provider is rate-limited).`)) return;
+  const btn = document.getElementById('bulk-ai-btn');
+  const originalLabel = btn.textContent;
+  let ok = 0, fail = 0;
+  for (let i = 0; i < missing.length; i++) {
+    const p = missing[i];
+    btn.textContent = `🎨 Generating ${i+1}/${missing.length} — ${p.name.slice(0,30)}…`;
+    try {
+      const r = await api('/api/admin/products/ai-image', { method:'POST', body: JSON.stringify({ name: p.name, category: p.category, description: p.description }) });
+      await api(`/api/admin/products/${p.id}`, { method:'PATCH', body: JSON.stringify({ image: r.url }) });
+      ok++;
+    } catch (e) {
+      fail++;
+      console.warn(`AI image failed for ${p.name}:`, e.message);
+    }
+  }
+  btn.disabled = false;
+  btn.textContent = originalLabel;
+  // Refresh state
+  const refreshed = await api('/api/admin/products'); STATE.products = refreshed.products;
+  renderInventory();
+  toast(`AI images: ${ok} created, ${fail} failed`, ok ? 'ok' : 'err');
+}
+
+async function saveProduct() {
+  const body = {
+    name: document.getElementById('prod-name').value.trim(),
+    brand: document.getElementById('prod-brand').value.trim(),
+    category: document.getElementById('prod-category').value,
+    strain: document.getElementById('prod-strain').value,
+    weight: document.getElementById('prod-weight').value.trim(),
+    price: Number(document.getElementById('prod-price').value) || 0,
+    compareAt: document.getElementById('prod-compareAt').value ? Number(document.getElementById('prod-compareAt').value) : null,
+    quantity: Number(document.getElementById('prod-quantity').value) || 0,
+    thc: document.getElementById('prod-thc').value.trim(),
+    cbd: document.getElementById('prod-cbd').value.trim(),
+    badge: document.getElementById('prod-badge').value,
+    available: document.getElementById('prod-available').value === 'true',
+    description: document.getElementById('prod-description').value.trim(),
+    image: document.getElementById('prod-image').value.trim(),
+  };
+  if (!body.name) return toast('Name is required', 'err');
+  try {
+    if (EDITING_PRODUCT) { await api(`/api/admin/products/${EDITING_PRODUCT}`, { method:'PATCH', body: JSON.stringify(body) }); toast('Product updated', 'ok'); }
+    else { await api('/api/admin/products', { method:'POST', body: JSON.stringify(body) }); toast('Product added', 'ok'); }
+    closeModal('m-product');
+    const r = await api('/api/admin/products'); STATE.products = r.products;
+    if (CURRENT_PAGE === 'inventory') renderInventory();
+    if (CURRENT_PAGE === 'dashboard') renderDashboard();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function deleteProduct() {
+  if (!EDITING_PRODUCT || !confirm('Delete this product? This cannot be undone.')) return;
+  try {
+    await api(`/api/admin/products/${EDITING_PRODUCT}`, { method:'DELETE' });
+    toast('Product deleted', 'ok'); closeModal('m-product');
+    const r = await api('/api/admin/products'); STATE.products = r.products;
+    if (CURRENT_PAGE === 'inventory') renderInventory();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function reseedConfirm() {
+  if (!confirm('Restore the seed catalog? This will RESET all products to defaults. Custom edits will be lost.')) return;
+  try {
+    const r = await api('/api/admin/products/reseed', { method:'POST' });
+    toast(`Restored ${r.count} seed products`, 'ok');
+    const p = await api('/api/admin/products'); STATE.products = p.products;
+    renderInventory();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+function openCsvImport() {
+  document.getElementById('csv-import-result').innerHTML = '';
+  document.getElementById('csv-import-file').value = '';
+  document.getElementById('csv-import-submit').disabled = false;
+  document.getElementById('csv-import-submit').textContent = 'Import CSV';
+  openModal('m-csv-import');
+}
+function closeCsvImport() { closeModal('m-csv-import'); }
+async function submitCsvImport() {
+  const file = document.getElementById('csv-import-file').files[0];
+  if (!file) return toast('Choose a CSV file first', 'err');
+  const btn = document.getElementById('csv-import-submit');
+  btn.disabled = true; btn.textContent = 'Importing…';
+  const res = document.getElementById('csv-import-result');
+  res.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Parsing and upserting… this may take a few seconds for large files.</div>';
+  try {
+    const fd = new FormData();
+    fd.append('csv', file);
+    const r = await fetch('/api/admin/products/import-csv', { method: 'POST', body: fd, credentials: 'include' });
+    const data = await r.json();
+    if (!r.ok || !data.success) throw new Error(data.error || 'Import failed');
+    const p = await api('/api/admin/products'); STATE.products = p.products;
+    renderInventory();
+    res.innerHTML = `
+      <div style="background:rgba(48,190,92,.12);border:1px solid rgba(48,190,92,.35);border-radius:8px;padding:14px;font-size:13px;line-height:1.6">
+        <div style="color:var(--green4);font-weight:700;margin-bottom:6px">✓ Import complete</div>
+        <div><strong>${data.created}</strong> created · <strong>${data.updated}</strong> updated · <strong>${data.skipped}</strong> skipped (of ${data.total} rows)</div>
+        ${data.errors && data.errors.length ? `<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--gold3)">${data.errors.length} row error${data.errors.length>1?'s':''}</summary><ul style="margin:6px 0 0 18px;color:var(--text-dim);font-size:12px">${data.errors.map(e=>`<li>${e}</li>`).join('')}</ul></details>` : ''}
+      </div>`;
+    btn.textContent = 'Import Another';
+    btn.disabled = false;
+    toast(`Imported ${data.created + data.updated} products`, 'ok');
+  } catch (e) {
+    res.innerHTML = `<div style="color:var(--red2);font-size:13px;padding:10px;background:rgba(192,48,48,.1);border-radius:8px">✕ ${e.message}</div>`;
+    btn.textContent = 'Try Again';
+    btn.disabled = false;
+  }
+}
+
+const TIER_BADGE = { bronze:'b-orange', silver:'b-gray', gold:'b-gold', platinum:'b-purple' };
+function renderCustomers() {
+  const q = (document.getElementById('cust-search')?.value || '').toLowerCase();
+  let list = STATE.customers;
+  if (q) list = list.filter(c => (c.name||'').toLowerCase().includes(q) || (c.phone||'').includes(q));
+  document.getElementById('cust-count').textContent = `Customers (${list.length})`;
+  document.getElementById('cust-tbody').innerHTML = list.length ? list.map(c => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(c.name||'')}</div><div class="tbl-meta">${escapeHTML(c.email||'')}</div></td>
+      <td>${formatPhone(c.phone)}</td>
+      <td><strong>${c.points||0}</strong> <span style="color:var(--text-dim);font-size:11px">/ ${c.lifetimePoints||0} lifetime</span></td>
+      <td><span class="badge ${TIER_BADGE[c.tier]||'b-gray'}">${c.tier||'bronze'}</span></td>
+      <td>${c.orders||0}</td>
+      <td>$${(c.totalSpent||0).toFixed(2)}</td>
+      <td>${c.lastOrderAt ? timeAgo(c.lastOrderAt) : '—'}</td>
+      <td class="tbl-actions"><button class="btn-ghost" onclick="adjustPoints('${c.id}')">± Points</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" class="tbl-empty">No customers yet. Customers are created automatically when they place an order.</td></tr>';
+}
+async function adjustPoints(id) {
+  const c = STATE.customers.find(x => x.id === id); if (!c) return;
+  const delta = prompt(`Adjust points for ${c.name} (current: ${c.points || 0})\nEnter +/- number:`);
+  if (delta === null) return;
+  const n = Number(delta);
+  if (!Number.isFinite(n)) return toast('Invalid number', 'err');
+  try { await api(`/api/admin/customers/${id}/adjust-points`, { method:'POST', body: JSON.stringify({ delta: n }) });
+    toast('Points updated', 'ok');
+    const r = await api('/api/admin/customers'); STATE.customers = r.customers; renderCustomers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+const DRV_STATUS_BADGE = { available:'b-green', on_delivery:'b-blue', offline:'b-gray' };
+function renderDrivers() {
+  document.getElementById('drv-tbody').innerHTML = STATE.drivers.length ? STATE.drivers.map(d => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(d.name)}</div></td>
+      <td>${formatPhone(d.phone)}</td>
+      <td>${escapeHTML(d.vehicle||'')}</td>
+      <td><span class="badge ${DRV_STATUS_BADGE[d.status]||'b-gray'}">${(d.status||'').replace('_',' ')}</span></td>
+      <td>${d.currentOrder ? `<span class="mono" style="font-size:12px">${d.currentOrder}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td>${d.todayDeliveries||0}</td>
+      <td>⭐ ${(d.rating||5).toFixed(1)}</td>
+      <td class="tbl-actions">
+        <button class="btn-ghost" onclick="toggleDriverStatus('${d.id}','${d.status}')">${d.status==='available'?'Set Offline':'Set Available'}</button>
+        <button class="btn-ghost" onclick="deleteDriver('${d.id}')">Delete</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="8" class="tbl-empty">No drivers. Add one to start dispatching deliveries.</td></tr>';
+}
+function openDriverModal() {
+  document.getElementById('drv-name').value='';
+  document.getElementById('drv-phone').value='';
+  document.getElementById('drv-vehicle').value='';
+  openModal('m-driver');
+}
+async function saveDriver() {
+  const body = { name: document.getElementById('drv-name').value.trim(),
+                 phone: document.getElementById('drv-phone').value.trim(),
+                 vehicle: document.getElementById('drv-vehicle').value.trim() };
+  if (!body.name || !body.phone) return toast('Name and phone required', 'err');
+  try { await api('/api/admin/drivers', { method:'POST', body: JSON.stringify(body) });
+    toast('Driver added', 'ok'); closeModal('m-driver');
+    const r = await api('/api/admin/drivers'); STATE.drivers = r.drivers; renderDrivers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function toggleDriverStatus(id, currentStatus) {
+  const status = currentStatus === 'available' ? 'offline' : 'available';
+  try { await api(`/api/admin/drivers/${id}`, { method:'PATCH', body: JSON.stringify({ status }) });
+    const r = await api('/api/admin/drivers'); STATE.drivers = r.drivers; renderDrivers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function deleteDriver(id) {
+  if (!confirm('Delete this driver?')) return;
+  try { await api(`/api/admin/drivers/${id}`, { method:'DELETE' });
+    toast('Driver removed', 'ok');
+    const r = await api('/api/admin/drivers'); STATE.drivers = r.drivers; renderDrivers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function renderPromos() {
+  document.getElementById('promo-tbody').innerHTML = STATE.promos.length ? STATE.promos.map(p => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(p.name)}</div></td>
+      <td><span class="mono badge b-gold">${escapeHTML(p.code)}</span></td>
+      <td>${p.type === 'percent' ? '% Discount' : p.type === 'fixed' ? '$ Off' : 'Free Ship'}</td>
+      <td><strong>${p.type === 'percent' ? p.value + '%' : p.type === 'fixed' ? '$' + p.value : '—'}</strong></td>
+      <td>${p.used||0} uses</td>
+      <td>${p.expires||'—'}</td>
+      <td>${p.status === 'active' ? '<span class="badge b-green">Active</span>' : '<span class="badge b-gray">Paused</span>'}</td>
+      <td class="tbl-actions"><button class="btn-ghost" onclick="editPromo('${p.id}')">Edit</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" class="tbl-empty">No promo codes yet. Add one to start running campaigns.</td></tr>';
+}
+function openPromoModal() {
+  EDITING_PROMO = null;
+  document.getElementById('m-promo-title').textContent = 'Add Promo';
+  document.getElementById('m-promo-delete').style.display = 'none';
+  ['name','code','value','expires'].forEach(k => { document.getElementById(`prm-${k}`).value=''; });
+  document.getElementById('prm-type').value = 'percent';
+  document.getElementById('prm-status').value = 'active';
+  openModal('m-promo');
+}
+function editPromo(id) {
+  const p = STATE.promos.find(x => x.id === id); if (!p) return;
+  EDITING_PROMO = id;
+  document.getElementById('m-promo-title').textContent = 'Edit Promo';
+  document.getElementById('m-promo-delete').style.display = '';
+  document.getElementById('prm-name').value = p.name || '';
+  document.getElementById('prm-code').value = p.code || '';
+  document.getElementById('prm-type').value = p.type || 'percent';
+  document.getElementById('prm-value').value = p.value ?? 0;
+  document.getElementById('prm-expires').value = p.expires || '';
+  document.getElementById('prm-status').value = p.status || 'active';
+  openModal('m-promo');
+}
+async function savePromo() {
+  const body = { name: document.getElementById('prm-name').value.trim(),
+                 code: document.getElementById('prm-code').value.trim().toUpperCase(),
+                 type: document.getElementById('prm-type').value,
+                 value: Number(document.getElementById('prm-value').value) || 0,
+                 expires: document.getElementById('prm-expires').value,
+                 status: document.getElementById('prm-status').value };
+  if (!body.name || !body.code) return toast('Name and code required', 'err');
+  try {
+    if (EDITING_PROMO) await api(`/api/admin/promos/${EDITING_PROMO}`, { method:'PATCH', body: JSON.stringify(body) });
+    else await api('/api/admin/promos', { method:'POST', body: JSON.stringify(body) });
+    toast('Promo saved', 'ok'); closeModal('m-promo');
+    const r = await api('/api/admin/promos'); STATE.promos = r.promos; renderPromos();
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function deletePromo() {
+  if (!EDITING_PROMO || !confirm('Delete this promo code?')) return;
+  try { await api(`/api/admin/promos/${EDITING_PROMO}`, { method:'DELETE' });
+    toast('Promo deleted', 'ok'); closeModal('m-promo');
+    const r = await api('/api/admin/promos'); STATE.promos = r.promos; renderPromos(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+/* ── Specials (visual homepage deals) ─────────── */
+const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function isSpecialLiveNow(sp, now = new Date()) {
+  if (sp.status !== 'published') return false;
+  if (sp.startAt && now < new Date(sp.startAt)) return false;
+  if (sp.endAt && now > new Date(sp.endAt)) return false;
+  if (sp.cadence === 'weekly') {
+    const d = Array.isArray(sp.daysOfWeek) ? sp.daysOfWeek : [];
+    if (d.length && !d.includes(now.getDay())) return false;
+  }
+  if (sp.cadence === 'monthly') {
+    const d = Array.isArray(sp.daysOfMonth) ? sp.daysOfMonth : [];
+    if (d.length && !d.includes(now.getDate())) return false;
+  }
+  return true;
+}
+function specialStatusBadge(sp) {
+  if (sp.status === 'archived') return '<span class="badge b-gray">Archived</span>';
+  if (sp.status === 'draft')    return '<span class="badge b-gray">Draft</span>';
+  if (isSpecialLiveNow(sp))     return '<span class="badge b-green">● Live</span>';
+  return '<span class="badge b-gold">Scheduled</span>';
+}
+function specialCadenceLabel(sp) {
+  if (sp.cadence === 'daily')   return 'Daily';
+  if (sp.cadence === 'weekly') {
+    const d = (sp.daysOfWeek || []).slice().sort();
+    return 'Weekly' + (d.length ? ` · ${d.map(i => WEEKDAYS[i]).join(', ')}` : '');
+  }
+  if (sp.cadence === 'monthly') {
+    const d = (sp.daysOfMonth || []).slice().sort((a,b) => a-b);
+    return 'Monthly' + (d.length ? ` · day ${d.join(', ')}` : '');
+  }
+  return 'One-off';
+}
+function specialWindowLabel(sp) {
+  const fmt = (s) => s ? new Date(s).toLocaleDateString('en-US', { month:'short', day:'numeric' }) : '';
+  const a = fmt(sp.startAt), b = fmt(sp.endAt);
+  if (a && b) return `${a} → ${b}`;
+  if (a) return `From ${a}`;
+  if (b) return `Until ${b}`;
+  return '<span style="color:var(--text-dim)">No time limit</span>';
+}
+
+function renderSpecials() {
+  const list = STATE.specials || [];
+  const live = list.filter(isSpecialLiveNow).length;
+  const totalRev = list.reduce((s,x) => s + (x.attributedRevenue||0), 0);
+  const totalClicks = list.reduce((s,x) => s + (x.clicks||0), 0);
+  document.getElementById('specials-kpis').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Live Now</div><div class="kpi-val">${live}</div></div>
+    <div class="kpi gold"><div class="kpi-label">Total Specials</div><div class="kpi-val">${list.length}</div></div>
+    <div class="kpi blue"><div class="kpi-label">Clicks (lifetime)</div><div class="kpi-val">${totalClicks}</div></div>
+    <div class="kpi purple"><div class="kpi-label">Attributed Revenue</div><div class="kpi-val">$${totalRev.toFixed(2)}</div></div>
+  `;
+
+  const filter = document.getElementById('specials-filter')?.value || '';
+  let view = list;
+  if (filter === 'live') view = list.filter(isSpecialLiveNow);
+  else if (filter) view = list.filter(x => x.status === filter);
+
+  document.getElementById('specials-count').textContent = `Specials (${view.length})`;
+  document.getElementById('specials-tbody').innerHTML = view.length ? view.map(sp => `
+    <tr>
+      <td>${sp.image
+        ? `<img src="${escapeHTML(sp.image)}" class="tbl-thumb" alt="" onerror="this.outerHTML='<div class=&quot;tbl-thumb-emoji&quot;>🎁</div>'">`
+        : `<div class="tbl-thumb-emoji">🎁</div>`}</td>
+      <td>
+        <div class="tbl-name">${escapeHTML(sp.title)}</div>
+        <div class="tbl-meta">${escapeHTML(sp.subtitle || '')}${sp.promoCode ? ` · <span class="mono badge b-gold">${escapeHTML(sp.promoCode)}</span>` : ''}</div>
+      </td>
+      <td>${escapeHTML(specialCadenceLabel(sp))}</td>
+      <td>${specialWindowLabel(sp)}</td>
+      <td>${specialStatusBadge(sp)}</td>
+      <td>
+        <div style="font-size:12px;line-height:1.5">
+          <div><strong>${sp.clicks||0}</strong> clicks · ${sp.impressions||0} views</div>
+          <div style="color:var(--text-dim)">${sp.attributedOrders||0} orders · $${(sp.attributedRevenue||0).toFixed(2)}</div>
+        </div>
+      </td>
+      <td class="tbl-actions">
+        ${sp.status === 'published'
+          ? `<button class="btn-ghost" onclick="quickToggleSpecial('${sp.id}','draft')">Unpublish</button>`
+          : sp.status === 'draft'
+            ? `<button class="btn-ghost" onclick="quickToggleSpecial('${sp.id}','published')">Publish</button>`
+            : `<button class="btn-ghost" onclick="quickToggleSpecial('${sp.id}','draft')">Restore</button>`
+        }
+        <button class="btn-ghost" onclick="editSpecial('${sp.id}')">Edit</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="7" class="tbl-empty">No specials yet. Add your first daily / weekly / monthly deal.</td></tr>';
+}
+
+async function quickToggleSpecial(id, status) {
+  try {
+    await api(`/api/admin/specials/${id}`, { method:'PATCH', body: JSON.stringify({ status }) });
+    toast(status === 'published' ? 'Special published — live on homepage' : 'Special unpublished', 'ok');
+    const r = await api('/api/admin/specials'); STATE.specials = r.specials; renderSpecials();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+function updateSpecialPreview() {
+  const url = document.getElementById('sp-image').value;
+  const el = document.getElementById('sp-img-preview');
+  if (url) { el.style.backgroundImage = `url("${url.replace(/"/g,'\\"')}")`; el.textContent = ''; }
+  else { el.style.backgroundImage = ''; el.textContent = '🎁'; }
+}
+
+async function uploadSpecialImage(input) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('image', input.files[0]);
+  try {
+    const res = await fetch('/api/admin/upload', { method:'POST', credentials:'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    document.getElementById('sp-image').value = data.url;
+    updateSpecialPreview();
+    toast('Image uploaded', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+  input.value = '';
+}
+
+function buildDayOfWeekPicker(selected = []) {
+  const set = new Set(selected.map(Number));
+  document.getElementById('sp-dow').innerHTML = WEEKDAYS.map((d, i) => `
+    <label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;${set.has(i)?'background:rgba(48,190,92,.12);border-color:rgba(48,190,92,.45);color:var(--cream)':''}">
+      <input type="checkbox" value="${i}" ${set.has(i)?'checked':''} style="margin:0"> ${d}
+    </label>`).join('');
+}
+
+function onCadenceChange() {
+  const c = document.getElementById('sp-cadence').value;
+  document.getElementById('sp-dow-wrap').style.display = (c === 'weekly') ? '' : 'none';
+  document.getElementById('sp-dom-wrap').style.display = (c === 'monthly') ? '' : 'none';
+}
+
+function resetSpecialModal() {
+  document.getElementById('sp-image').value = '';
+  document.getElementById('sp-title').value = '';
+  document.getElementById('sp-subtitle').value = '';
+  document.getElementById('sp-details').value = '';
+  document.getElementById('sp-ctaLabel').value = 'Shop Now';
+  document.getElementById('sp-ctaUrl').value = '/#shop';
+  document.getElementById('sp-promoCode').value = '';
+  document.getElementById('sp-cadence').value = 'one-off';
+  document.getElementById('sp-priority').value = '100';
+  document.getElementById('sp-startAt').value = '';
+  document.getElementById('sp-endAt').value = '';
+  document.getElementById('sp-dom').value = '';
+  document.getElementById('sp-status').value = 'draft';
+  buildDayOfWeekPicker([]);
+  onCadenceChange();
+  updateSpecialPreview();
+}
+
+function openSpecialModal() {
+  EDITING_SPECIAL = null;
+  document.getElementById('m-special-title').textContent = 'Add Special';
+  document.getElementById('m-special-delete').style.display = 'none';
+  resetSpecialModal();
+  openModal('m-special');
+}
+
+function editSpecial(id) {
+  const sp = STATE.specials.find(x => x.id === id); if (!sp) return;
+  EDITING_SPECIAL = id;
+  document.getElementById('m-special-title').textContent = 'Edit Special';
+  document.getElementById('m-special-delete').style.display = '';
+  document.getElementById('sp-image').value = sp.image || '';
+  document.getElementById('sp-title').value = sp.title || '';
+  document.getElementById('sp-subtitle').value = sp.subtitle || '';
+  document.getElementById('sp-details').value = sp.details || '';
+  document.getElementById('sp-ctaLabel').value = sp.ctaLabel || 'Shop Now';
+  document.getElementById('sp-ctaUrl').value = sp.ctaUrl || '/#shop';
+  document.getElementById('sp-promoCode').value = sp.promoCode || '';
+  document.getElementById('sp-cadence').value = sp.cadence || 'one-off';
+  document.getElementById('sp-priority').value = sp.priority ?? 100;
+  // datetime-local needs YYYY-MM-DDTHH:mm
+  const toLocal = (iso) => { if (!iso) return ''; const d = new Date(iso); if (isNaN(d)) return ''; const pad = n => String(n).padStart(2,'0'); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  document.getElementById('sp-startAt').value = toLocal(sp.startAt);
+  document.getElementById('sp-endAt').value = toLocal(sp.endAt);
+  document.getElementById('sp-dom').value = (sp.daysOfMonth || []).join(', ');
+  document.getElementById('sp-status').value = sp.status || 'draft';
+  buildDayOfWeekPicker(sp.daysOfWeek || []);
+  onCadenceChange();
+  updateSpecialPreview();
+  openModal('m-special');
+}
+
+async function saveSpecial() {
+  const cadence = document.getElementById('sp-cadence').value;
+  const dow = Array.from(document.querySelectorAll('#sp-dow input:checked')).map(el => Number(el.value));
+  const dom = document.getElementById('sp-dom').value.split(',').map(s => parseInt(s.trim(), 10)).filter(n => n >= 1 && n <= 31);
+  const startLocal = document.getElementById('sp-startAt').value;
+  const endLocal   = document.getElementById('sp-endAt').value;
+  const body = {
+    title:      document.getElementById('sp-title').value.trim(),
+    subtitle:   document.getElementById('sp-subtitle').value.trim(),
+    details:    document.getElementById('sp-details').value.trim(),
+    image:      document.getElementById('sp-image').value.trim(),
+    ctaLabel:   document.getElementById('sp-ctaLabel').value.trim() || 'Shop Now',
+    ctaUrl:     document.getElementById('sp-ctaUrl').value.trim() || '/#shop',
+    promoCode:  document.getElementById('sp-promoCode').value.trim().toUpperCase(),
+    cadence,
+    priority:   Number(document.getElementById('sp-priority').value) || 100,
+    startAt:    startLocal ? new Date(startLocal).toISOString() : '',
+    endAt:      endLocal   ? new Date(endLocal).toISOString()   : '',
+    daysOfWeek:  cadence === 'weekly'  ? dow : [],
+    daysOfMonth: cadence === 'monthly' ? dom : [],
+    status:     document.getElementById('sp-status').value,
+  };
+  if (!body.title) return toast('Title is required', 'err');
+  try {
+    if (EDITING_SPECIAL) await api(`/api/admin/specials/${EDITING_SPECIAL}`, { method:'PATCH', body: JSON.stringify(body) });
+    else await api('/api/admin/specials', { method:'POST', body: JSON.stringify(body) });
+    toast('Special saved', 'ok'); closeModal('m-special');
+    const r = await api('/api/admin/specials'); STATE.specials = r.specials; renderSpecials();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function deleteSpecial() {
+  if (!EDITING_SPECIAL || !confirm('Delete this special? This cannot be undone.')) return;
+  try { await api(`/api/admin/specials/${EDITING_SPECIAL}`, { method:'DELETE' });
+    toast('Special deleted', 'ok'); closeModal('m-special');
+    const r = await api('/api/admin/specials'); STATE.specials = r.specials; renderSpecials(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+/* ── Reviews ───────────────────────────────────── */
+function stars(n) { n = Math.round(Number(n)||0); return '★★★★★'.slice(0,n) + '☆☆☆☆☆'.slice(0,5-n); }
+function renderReviews() {
+  const s = STATE.settings || {};
+  const g = s.google || {};
+  document.getElementById('set-gRating').value  = g.rating || '';
+  document.getElementById('set-gCount').value   = g.reviewCount || '';
+  document.getElementById('set-gProfile').value = g.profileUrl || '';
+  document.getElementById('set-gReview').value  = g.reviewUrl || '';
+  document.getElementById('set-gApiKey').value  = g.apiKey || '';
+  document.getElementById('set-gPlaceId').value = g.placeId || '';
+  if (g.lastSync) {
+    const el = document.getElementById('g-sync-status');
+    if (el) el.innerHTML = `<strong style="color:var(--green4)">Last synced:</strong> ${new Date(g.lastSync).toLocaleString()} · auto-refreshes every 6 hours.`;
+  }
+  const list = STATE.reviews || [];
+  document.getElementById('reviews-tbody').innerHTML = list.length ? list.map(r => `
+    <tr>
+      <td style="color:var(--gold3);white-space:nowrap;font-size:13px">${stars(r.rating)}</td>
+      <td><div class="tbl-name">${escapeHTML(r.author)}</div><div class="tbl-meta">${escapeHTML(r.source||'google')}</div></td>
+      <td style="max-width:360px"><div style="font-size:12px;color:var(--text-dim);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${escapeHTML(r.text)}</div></td>
+      <td style="white-space:nowrap">${escapeHTML(r.date||'')}</td>
+      <td>${r.featured ? '<span class="badge b-gold">Featured</span>' : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td>${r.status === 'hidden' ? '<span class="badge b-gray">Hidden</span>' : '<span class="badge b-green">Published</span>'}</td>
+      <td class="tbl-actions"><button class="btn-ghost" onclick="editReview('${r.id}')">Edit</button></td>
+    </tr>`).join('') : '<tr><td colspan="7" class="tbl-empty">No reviews yet. Add your best Google reviews to show them on the site.</td></tr>';
+}
+async function saveGoogleBusiness() {
+  const google = {
+    rating:      Number(document.getElementById('set-gRating').value) || 0,
+    reviewCount: Number(document.getElementById('set-gCount').value) || 0,
+    profileUrl:  document.getElementById('set-gProfile').value.trim(),
+    reviewUrl:   document.getElementById('set-gReview').value.trim(),
+  };
+  try {
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ google }) });
+    toast('Google Business info saved', 'ok');
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function saveGoogleApi() {
+  const google = {
+    apiKey:  document.getElementById('set-gApiKey').value.trim(),
+    placeId: document.getElementById('set-gPlaceId').value.trim(),
+  };
+  try {
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ google }) });
+    toast('Google API credentials saved', 'ok');
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function syncGoogle() {
+  const btn = document.getElementById('g-sync-btn');
+  const status = document.getElementById('g-sync-status');
+  btn.disabled = true; btn.textContent = 'Syncing…';
+  try {
+    const r = await api('/api/admin/google/sync', { method:'POST' });
+    status.innerHTML = `<strong style="color:var(--green4)">✓ Synced</strong> — Google rating <strong>${r.rating}</strong> · <strong>${r.reviewCount}</strong> reviews · imported <strong>${r.imported}</strong> review${r.imported===1?'':'s'}.`;
+    toast('Synced from Google', 'ok');
+    const [s, rev] = await Promise.all([api('/api/admin/settings'), api('/api/admin/reviews')]);
+    STATE.settings = s.settings; STATE.reviews = rev.reviews; renderReviews();
+  } catch (e) {
+    status.innerHTML = `<strong style="color:var(--red2,#C03030)">Sync failed:</strong> ${escapeHTML(e.message)}`;
+    toast(e.message, 'err');
+  } finally { btn.disabled = false; btn.textContent = '↻ Sync from Google Now'; }
+}
+function openReviewModal() {
+  EDITING_REVIEW = null;
+  document.getElementById('m-review-title').textContent = 'Add Review';
+  document.getElementById('m-review-delete').style.display = 'none';
+  document.getElementById('rv-author').value = '';
+  document.getElementById('rv-rating').value = '5';
+  document.getElementById('rv-text').value = '';
+  document.getElementById('rv-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('rv-source').value = 'google';
+  document.getElementById('rv-featured').value = 'false';
+  document.getElementById('rv-status').value = 'published';
+  openModal('m-review');
+}
+function editReview(id) {
+  const r = STATE.reviews.find(x => x.id === id); if (!r) return;
+  EDITING_REVIEW = id;
+  document.getElementById('m-review-title').textContent = 'Edit Review';
+  document.getElementById('m-review-delete').style.display = '';
+  document.getElementById('rv-author').value = r.author || '';
+  document.getElementById('rv-rating').value = String(r.rating || 5);
+  document.getElementById('rv-text').value = r.text || '';
+  document.getElementById('rv-date').value = r.date || '';
+  document.getElementById('rv-source').value = r.source || 'google';
+  document.getElementById('rv-featured').value = r.featured ? 'true' : 'false';
+  document.getElementById('rv-status').value = r.status || 'published';
+  openModal('m-review');
+}
+async function saveReview() {
+  const body = {
+    author:   document.getElementById('rv-author').value.trim(),
+    rating:   Number(document.getElementById('rv-rating').value),
+    text:     document.getElementById('rv-text').value.trim(),
+    date:     document.getElementById('rv-date').value,
+    source:   document.getElementById('rv-source').value,
+    featured: document.getElementById('rv-featured').value === 'true',
+    status:   document.getElementById('rv-status').value,
+  };
+  if (!body.author || !body.text) return toast('Author and review text required', 'err');
+  try {
+    if (EDITING_REVIEW) await api(`/api/admin/reviews/${EDITING_REVIEW}`, { method:'PATCH', body: JSON.stringify(body) });
+    else await api('/api/admin/reviews', { method:'POST', body: JSON.stringify(body) });
+    toast('Review saved', 'ok'); closeModal('m-review');
+    const r = await api('/api/admin/reviews'); STATE.reviews = r.reviews; renderReviews();
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function deleteReview() {
+  if (!EDITING_REVIEW || !confirm('Delete this review?')) return;
+  try { await api(`/api/admin/reviews/${EDITING_REVIEW}`, { method:'DELETE' });
+    toast('Review deleted', 'ok'); closeModal('m-review');
+    const r = await api('/api/admin/reviews'); STATE.reviews = r.reviews; renderReviews(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+/* ── Blog ──────────────────────────────────────── */
+function renderBlog() {
+  const list = STATE.posts || [];
+  // populate category datalist
+  const cats = [...new Set(list.map(p => p.category).filter(Boolean))];
+  document.getElementById('post-cat-list').innerHTML = cats.map(c => `<option value="${escapeHTML(c)}">`).join('');
+  document.getElementById('blog-tbody').innerHTML = list.length ? list.map(p => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(p.title)}</div><div class="tbl-meta">/blog/${escapeHTML(p.slug||'')}</div></td>
+      <td><span class="badge b-blue">${escapeHTML(p.category||'—')}</span></td>
+      <td>${p.status === 'published' ? '<span class="badge b-green">Published</span>' : p.status === 'archived' ? '<span class="badge b-gray">Archived</span>' : '<span class="badge b-gold">Draft</span>'}</td>
+      <td style="white-space:nowrap">${p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : '—'}</td>
+      <td class="tbl-actions">
+        ${p.status==='published' ? `<button class="btn-ghost" onclick="window.open('/blog/${encodeURIComponent(p.slug)}','_blank')">View</button>` : ''}
+        <button class="btn-ghost" onclick="editPost('${p.id}')">Edit</button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="5" class="tbl-empty">No posts yet. Create one or import from your old site.</td></tr>';
+}
+function syncSlug() {
+  const t = document.getElementById('post-title').value;
+  document.getElementById('post-slug').value = t.toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').slice(0,80);
+}
+function updatePostImgPreview() {
+  const url = document.getElementById('post-cover').value;
+  const el = document.getElementById('post-img-preview');
+  if (url) { el.style.backgroundImage = `url("${url.replace(/"/g,'\\"')}")`; el.textContent=''; }
+  else { el.style.backgroundImage=''; el.textContent='🖼️'; }
+}
+async function uploadPostImage(input) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('image', input.files[0]);
+  try {
+    const res = await fetch('/api/admin/upload', { method:'POST', credentials:'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    document.getElementById('post-cover').value = data.url; updatePostImgPreview(); toast('Image uploaded','ok');
+  } catch (e) { toast(e.message, 'err'); }
+  input.value='';
+}
+async function genPostImage() {
+  const prompt = (document.getElementById('post-title').value.trim() || document.getElementById('ai-topic').value.trim());
+  if (!prompt) return toast('Add a post title first (used as the image prompt)', 'err');
+  const btn = document.getElementById('post-aiimg-btn');
+  btn.disabled = true; btn.textContent = '🎨 Generating image…';
+  try {
+    const r = await api('/api/admin/posts/ai-image', { method:'POST', body: JSON.stringify({ prompt }) });
+    document.getElementById('post-cover').value = r.url; updatePostImgPreview(); toast('AI image created', 'ok');
+  } catch (e) { toast(e.message, 'err'); }
+  finally { btn.disabled = false; btn.textContent = (STATE.settings?.ai?.imageProvider === 'openai') ? '🎨 Generate image with AI (DALL·E)' : '🎨 Generate image with AI (free)'; }
+}
+function fillPostForm(p) {
+  document.getElementById('post-cover').value = p.coverImage || '';
+  document.getElementById('post-title').value = p.title || '';
+  document.getElementById('post-slug').value = p.slug || '';
+  document.getElementById('post-category').value = p.category || 'Education';
+  document.getElementById('post-excerpt').value = p.excerpt || '';
+  document.getElementById('post-body').value = p.body || '';
+  document.getElementById('post-tags').value = (p.tags||[]).join(', ');
+  document.getElementById('post-author').value = p.author || 'District Cure';
+  document.getElementById('post-metatitle').value = p.metaTitle || '';
+  document.getElementById('post-metadesc').value = p.metaDescription || '';
+  document.getElementById('post-keywords').value = (p.keywords||[]).join(', ');
+  document.getElementById('post-status').value = p.status || 'draft';
+  document.getElementById('post-date').value = p.publishedAt ? p.publishedAt.slice(0,10) : '';
+  document.getElementById('ai-status').textContent = '';
+  // Label the AI image button to match the current image source (Free vs DALL·E)
+  const btn = document.getElementById('post-aiimg-btn');
+  if (btn) btn.textContent = (STATE.settings?.ai?.imageProvider === 'openai') ? '🎨 Generate image with AI (DALL·E)' : '🎨 Generate image with AI (free)';
+  updatePostImgPreview();
+}
+function openPostModal() {
+  EDITING_POST = null;
+  document.getElementById('m-post-title').textContent = 'New Post';
+  document.getElementById('m-post-delete').style.display = 'none';
+  fillPostForm({});
+  openModal('m-post');
+}
+function editPost(id) {
+  const p = STATE.posts.find(x => x.id === id); if (!p) return;
+  EDITING_POST = id;
+  document.getElementById('m-post-title').textContent = 'Edit Post';
+  document.getElementById('m-post-delete').style.display = '';
+  fillPostForm(p);
+  openModal('m-post');
+}
+function collectPost() {
+  const csv = (s) => s.split(',').map(x=>x.trim()).filter(Boolean);
+  return {
+    title: document.getElementById('post-title').value.trim(),
+    slug: document.getElementById('post-slug').value.trim(),
+    coverImage: document.getElementById('post-cover').value.trim(),
+    category: document.getElementById('post-category').value.trim() || 'Education',
+    excerpt: document.getElementById('post-excerpt').value.trim(),
+    body: document.getElementById('post-body').value,
+    tags: csv(document.getElementById('post-tags').value),
+    author: document.getElementById('post-author').value.trim() || 'District Cure',
+    metaTitle: document.getElementById('post-metatitle').value.trim(),
+    metaDescription: document.getElementById('post-metadesc').value.trim(),
+    keywords: csv(document.getElementById('post-keywords').value),
+    status: document.getElementById('post-status').value,
+    publishedAt: document.getElementById('post-date').value ? new Date(document.getElementById('post-date').value).toISOString() : '',
+  };
+}
+async function savePost() {
+  const body = collectPost();
+  if (!body.title) return toast('Title is required', 'err');
+  try {
+    if (EDITING_POST) await api(`/api/admin/posts/${EDITING_POST}`, { method:'PATCH', body: JSON.stringify(body) });
+    else await api('/api/admin/posts', { method:'POST', body: JSON.stringify(body) });
+    toast('Post saved', 'ok'); closeModal('m-post');
+    const r = await api('/api/admin/posts'); STATE.posts = r.posts; renderBlog();
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function deletePost() {
+  if (!EDITING_POST || !confirm('Delete this post permanently?')) return;
+  try { await api(`/api/admin/posts/${EDITING_POST}`, { method:'DELETE' });
+    toast('Post deleted', 'ok'); closeModal('m-post');
+    const r = await api('/api/admin/posts'); STATE.posts = r.posts; renderBlog(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function aiDraft() {
+  const topic = document.getElementById('ai-topic').value.trim();
+  if (!topic) return toast('Enter a topic for the AI', 'err');
+  const btn = document.getElementById('ai-draft-btn'), st = document.getElementById('ai-status');
+  btn.disabled = true; btn.textContent = '✨ Writing…'; st.textContent = 'Generating draft — this can take 10–20 seconds…';
+  try {
+    const body = {
+      topic,
+      tone: document.getElementById('ai-tone').value.trim(),
+      keywords: document.getElementById('ai-keywords').value.split(',').map(x=>x.trim()).filter(Boolean),
+      category: document.getElementById('post-category').value.trim(),
+    };
+    const r = await api('/api/admin/posts/ai-draft', { method:'POST', body: JSON.stringify(body) });
+    const d = r.draft || {};
+    if (d.title) document.getElementById('post-title').value = d.title;
+    if (d.title && !EDITING_POST) syncSlug();
+    if (d.excerpt) document.getElementById('post-excerpt').value = d.excerpt;
+    if (d.body) document.getElementById('post-body').value = d.body;
+    if (d.metaTitle) document.getElementById('post-metatitle').value = d.metaTitle;
+    if (d.metaDescription) document.getElementById('post-metadesc').value = d.metaDescription;
+    if (Array.isArray(d.keywords)) document.getElementById('post-keywords').value = d.keywords.join(', ');
+    if (Array.isArray(d.tags)) document.getElementById('post-tags').value = d.tags.join(', ');
+    if (d.coverImage) { document.getElementById('post-cover').value = d.coverImage; updatePostImgPreview(); }
+    const imgNote = d.coverImage ? ' (with AI cover image)' : (d.imageError ? ' (image skipped: ' + d.imageError + ')' : '');
+    st.innerHTML = `<span style="color:var(--green4)">✓ Draft generated${imgNote} — review &amp; edit, then Save.</span>`;
+    toast('AI draft ready', 'ok');
+  } catch (e) { st.innerHTML = `<span style="color:var(--red2,#C03030)">${escapeHTML(e.message)}</span>`; toast(e.message, 'err'); }
+  finally { btn.disabled = false; btn.textContent = '✨ Generate draft with AI'; }
+}
+
+/* ── Import ────────────────────────────────────── */
+function openImportModal() {
+  document.getElementById('import-json').value = '';
+  document.getElementById('import-status').textContent = '';
+  openModal('m-import');
+}
+function loadImportFile(input) {
+  const f = input.files?.[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => { document.getElementById('import-json').value = reader.result; document.getElementById('import-status').textContent = `Loaded ${f.name}`; };
+  reader.readAsText(f);
+}
+async function runImport() {
+  const raw = document.getElementById('import-json').value.trim();
+  if (!raw) return toast('Paste or upload JSON first', 'err');
+  let parsed; try { parsed = JSON.parse(raw); } catch (e) { return toast('Invalid JSON: ' + e.message, 'err'); }
+  try {
+    const r = await api('/api/admin/posts/import', { method:'POST', body: JSON.stringify(parsed) });
+    document.getElementById('import-status').innerHTML = `<span style="color:var(--green4)">✓ Imported ${r.imported}, skipped ${r.skipped} of ${r.total}.</span>`;
+    toast(`Imported ${r.imported} posts`, 'ok');
+    const p = await api('/api/admin/posts'); STATE.posts = p.posts; renderBlog();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/* ── SEO Tools ─────────────────────────────────── */
+function renderSeo() {
+  const s = STATE.settings || {}; const seo = s.seo || {}; const ai = s.ai || {};
+  document.getElementById('seo-title').value = seo.defaultTitle || '';
+  document.getElementById('seo-template').value = seo.titleTemplate || '';
+  document.getElementById('seo-desc').value = seo.defaultDescription || '';
+  document.getElementById('seo-keywords').value = (seo.keywords||[]).join(', ');
+  document.getElementById('seo-ogimage').value = seo.ogImage || '';
+  document.getElementById('seo-biztype').value = seo.businessType || 'Store';
+  document.getElementById('seo-areas').value = (seo.serviceAreas||[]).join(', ');
+  document.getElementById('seo-gsc').value = seo.gscVerification || '';
+  document.getElementById('seo-bing').value = seo.bingVerification || '';
+  document.getElementById('seo-aiprovider').value = ai.provider || 'pollinations';
+  document.getElementById('seo-openaikey').value = ai.openaiKey || '';
+  document.getElementById('seo-geminikey').value = ai.geminiKey || '';
+  document.getElementById('seo-groqkey').value = ai.groqKey || '';
+  document.getElementById('seo-aikey').value = ai.anthropicKey || '';
+  document.getElementById('seo-aimodel').value = ai.model || '';
+  document.getElementById('seo-imageprovider').value = ai.imageProvider || 'pollinations';
+  document.getElementById('seo-autoimage').checked = ai.autoImage !== false;
+  updateAiHint();
+}
+function updateAiHint() {
+  const p = document.getElementById('seo-aiprovider').value;
+  const el = document.getElementById('ai-hint');
+  const links = {
+    pollinations: '<strong style="color:var(--green4)">No signup needed</strong> — works now, $0. Free community AI: decent quality, occasionally busy (just retry).',
+    openai: 'Uses your <strong>OpenAI account balance</strong>. Get a key at <strong>platform.openai.com</strong> → API keys. Default model <strong>gpt-4o-mini</strong> is very cheap (fractions of a cent per post) — wise use of your balance.',
+    gemini: 'Get a <strong>free</strong> Gemini key at <strong>aistudio.google.com</strong> → “Get API key” (no credit card).',
+    groq: 'Get a <strong>free</strong> Groq key at <strong>console.groq.com</strong> → API Keys.',
+    anthropic: 'Get a key at <strong>console.anthropic.com</strong> (paid usage).',
+  };
+  if (el) el.innerHTML = (links[p] || '') + ' Keys stay on your server, never shown to visitors. Pick your image source separately below — keep it on <strong>Free</strong> to save your balance.';
+}
+const _csv = (id) => document.getElementById(id).value.split(',').map(x=>x.trim()).filter(Boolean);
+async function patchSeo(seo, msg) {
+  try { await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ seo }) });
+    toast(msg, 'ok'); const r = await api('/api/admin/settings'); STATE.settings = r.settings; }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function saveSeoGlobal() {
+  await patchSeo({
+    defaultTitle: document.getElementById('seo-title').value.trim(),
+    titleTemplate: document.getElementById('seo-template').value.trim(),
+    defaultDescription: document.getElementById('seo-desc').value.trim(),
+    keywords: _csv('seo-keywords'),
+    ogImage: document.getElementById('seo-ogimage').value.trim(),
+  }, 'Global SEO saved');
+}
+async function saveSeoLocal() {
+  await patchSeo({
+    businessType: document.getElementById('seo-biztype').value,
+    serviceAreas: _csv('seo-areas'),
+  }, 'Local SEO saved');
+}
+async function saveSeoVerify() {
+  await patchSeo({
+    gscVerification: document.getElementById('seo-gsc').value.trim(),
+    bingVerification: document.getElementById('seo-bing').value.trim(),
+  }, 'Verification saved');
+}
+async function saveSeoAi() {
+  const ai = {
+    provider:      document.getElementById('seo-aiprovider').value,
+    openaiKey:     document.getElementById('seo-openaikey').value.trim(),
+    geminiKey:     document.getElementById('seo-geminikey').value.trim(),
+    groqKey:       document.getElementById('seo-groqkey').value.trim(),
+    anthropicKey:  document.getElementById('seo-aikey').value.trim(),
+    model:         document.getElementById('seo-aimodel').value.trim(),
+    autoImage:     document.getElementById('seo-autoimage').checked,
+    imageProvider: document.getElementById('seo-imageprovider').value,
+  };
+  try { await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ ai }) });
+    toast('AI settings saved', 'ok'); const r = await api('/api/admin/settings'); STATE.settings = r.settings; }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+/* ── Team Logins / Users ───────────────────────── */
+function renderUsers() {
+  const list = STATE.users || [];
+  document.getElementById('users-tbody').innerHTML = list.length ? list.map(u => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(u.name||'')}</div></td>
+      <td><span class="mono">${escapeHTML(u.username)}</span></td>
+      <td>${u.role === 'owner' ? '<span class="badge b-gold">Owner</span>' : '<span class="badge b-blue">Editor</span>'}</td>
+      <td style="white-space:nowrap">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
+      <td class="tbl-actions">
+        <button class="btn-ghost" onclick="editUser('${u.id}')">Edit</button>
+        ${ME && ME.id === u.id ? '' : `<button class="btn-ghost" onclick="quickDeleteUser('${u.id}','${escapeHTML(u.username)}')">Delete</button>`}
+      </td>
+    </tr>`).join('') : '<tr><td colspan="5" class="tbl-empty">No users yet.</td></tr>';
+}
+function openUserModal() {
+  EDITING_USER = null;
+  document.getElementById('m-user-title').textContent = 'Add User';
+  document.getElementById('m-user-delete').style.display = 'none';
+  document.getElementById('usr-name').value = '';
+  document.getElementById('usr-username').value = '';
+  document.getElementById('usr-username').disabled = false;
+  document.getElementById('usr-password').value = '';
+  document.getElementById('usr-pwd-label').textContent = 'Password * (min 6 chars)';
+  document.getElementById('usr-role').value = 'editor';
+  openModal('m-user');
+}
+function editUser(id) {
+  const u = STATE.users.find(x => x.id === id); if (!u) return;
+  EDITING_USER = id;
+  document.getElementById('m-user-title').textContent = 'Edit User';
+  document.getElementById('m-user-delete').style.display = (ME && ME.id === u.id) ? 'none' : '';
+  document.getElementById('usr-name').value = u.name || '';
+  document.getElementById('usr-username').value = u.username || '';
+  document.getElementById('usr-username').disabled = true;  // username can't be changed
+  document.getElementById('usr-password').value = '';
+  document.getElementById('usr-pwd-label').textContent = 'New password (leave blank to keep current)';
+  document.getElementById('usr-role').value = u.role || 'editor';
+  openModal('m-user');
+}
+async function saveUser() {
+  const name = document.getElementById('usr-name').value.trim();
+  const username = document.getElementById('usr-username').value.trim();
+  const password = document.getElementById('usr-password').value;
+  const role = document.getElementById('usr-role').value;
+  try {
+    if (EDITING_USER) {
+      const body = { name, role };
+      if (password) body.password = password;
+      await api(`/api/admin/users/${EDITING_USER}`, { method:'PATCH', body: JSON.stringify(body) });
+    } else {
+      if (!username || !password) return toast('Username and password are required', 'err');
+      await api('/api/admin/users', { method:'POST', body: JSON.stringify({ name, username, password, role }) });
+    }
+    toast('User saved', 'ok'); closeModal('m-user');
+    const r = await api('/api/admin/users'); STATE.users = r.users; renderUsers();
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function deleteUser() {
+  if (!EDITING_USER || !confirm('Delete this login account?')) return;
+  try { await api(`/api/admin/users/${EDITING_USER}`, { method:'DELETE' });
+    toast('User deleted', 'ok'); closeModal('m-user');
+    const r = await api('/api/admin/users'); STATE.users = r.users; renderUsers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function quickDeleteUser(id, uname) {
+  if (!confirm(`Delete login "${uname}"?`)) return;
+  try { await api(`/api/admin/users/${id}`, { method:'DELETE' });
+    toast('User deleted', 'ok');
+    const r = await api('/api/admin/users'); STATE.users = r.users; renderUsers(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function renderStaff() {
+  document.getElementById('staff-tbody').innerHTML = STATE.staff.length ? STATE.staff.map(s => `
+    <tr>
+      <td><div class="tbl-name">${escapeHTML(s.name)}</div></td>
+      <td><span class="badge b-blue">${escapeHTML(s.role||'')}</span></td>
+      <td>${escapeHTML(s.email||'—')}</td>
+      <td>${formatPhone(s.phone)}</td>
+      <td>${s.status === 'active' ? '<span class="badge b-green">Active</span>' : '<span class="badge b-gray">Inactive</span>'}</td>
+      <td class="tbl-actions"><button class="btn-ghost" onclick="deleteStaff('${s.id}')">Remove</button></td>
+    </tr>`).join('') : '<tr><td colspan="6" class="tbl-empty">No staff records yet.</td></tr>';
+}
+function openStaffModal() {
+  ['name','email','phone'].forEach(k => document.getElementById(`stf-${k}`).value='');
+  document.getElementById('stf-role').value = 'budtender';
+  openModal('m-staff');
+}
+async function saveStaff() {
+  const body = { name: document.getElementById('stf-name').value.trim(),
+                 role: document.getElementById('stf-role').value,
+                 email: document.getElementById('stf-email').value.trim(),
+                 phone: document.getElementById('stf-phone').value.trim() };
+  if (!body.name) return toast('Name required', 'err');
+  try { await api('/api/admin/staff', { method:'POST', body: JSON.stringify(body) });
+    toast('Staff added', 'ok'); closeModal('m-staff');
+    const r = await api('/api/admin/staff'); STATE.staff = r.staff; renderStaff(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function deleteStaff(id) {
+  if (!confirm('Remove this staff member?')) return;
+  try { await api(`/api/admin/staff/${id}`, { method:'DELETE' });
+    toast('Removed', 'ok');
+    const r = await api('/api/admin/staff'); STATE.staff = r.staff; renderStaff(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function renderAnalytics() {
+  const s = STATE.stats;
+  document.getElementById('analytics-kpis').innerHTML = `
+    <div class="kpi green"><div class="kpi-label">Total Revenue</div><div class="kpi-val">$${(s.totalRevenue||0).toFixed(2)}</div></div>
+    <div class="kpi gold"><div class="kpi-label">Total Orders</div><div class="kpi-val">${s.totalOrders||0}</div></div>
+    <div class="kpi blue"><div class="kpi-label">Avg Order Value</div><div class="kpi-val">$${(s.totalOrders ? s.totalRevenue/s.totalOrders : 0).toFixed(2)}</div></div>
+    <div class="kpi purple"><div class="kpi-label">Total Customers</div><div class="kpi-val">${s.totalCustomers||0}</div></div>
+  `;
+  buildChart('analytics-chart-bars', s.weekly || []);
+  const cats = s.categories || {};
+  const maxC = Math.max(1, ...Object.values(cats));
+  const catKeys = Object.keys(cats);
+  document.getElementById('cat-bars').innerHTML = catKeys.length
+    ? catKeys.map(k => `
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><strong>${k}</strong><span style="color:var(--text-dim)">${cats[k]} sold</span></div>
+          <div style="height:8px;background:var(--surface);border-radius:100px;overflow:hidden"><div style="height:100%;width:${(cats[k]/maxC)*100}%;background:linear-gradient(90deg,var(--green3),var(--green2));border-radius:100px;transition:width .4s"></div></div>
+        </div>`).join('')
+    : '<div style="text-align:center;color:var(--text-dim);padding:30px">No category data yet. Once orders come in, breakdowns appear here.</div>';
+}
+
+async function uploadBrandLogo(input) {
+  if (!input.files?.[0]) return;
+  const status = document.getElementById('logo-status');
+  status.textContent = 'Uploading…';
+  const fd = new FormData(); fd.append('image', input.files[0]);
+  try {
+    const res = await fetch('/api/admin/upload', { method:'POST', credentials:'include', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Upload failed');
+    // cache-bust so the new logo shows immediately everywhere
+    const url = data.url + '?v=' + Date.now();
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ brandLogo: url }) });
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+    renderSettings();
+    status.innerHTML = '<span style="color:var(--green4)">✓ Logo saved — it now appears in the header, app icon, and share image across the site.</span>';
+    toast('Brand logo updated', 'ok');
+  } catch (e) { status.innerHTML = `<span style="color:var(--red2,#C03030)">${escapeHTML(e.message)}</span>`; toast(e.message, 'err'); }
+  input.value = '';
+}
+function renderSettings() {
+  const s = STATE.settings;
+  const lp = document.getElementById('logo-preview');
+  if (s.brandLogo) { lp.style.backgroundImage = `url("${s.brandLogo.replace(/"/g,'\\"')}")`; lp.style.backgroundSize='contain'; lp.style.backgroundRepeat='no-repeat'; lp.style.backgroundPosition='center'; lp.textContent=''; }
+  else { lp.style.backgroundImage=''; lp.textContent='🏷️'; }
+  document.getElementById('set-storeName').value = s.storeName || '';
+  document.getElementById('set-phone').value = s.phone || '';
+  document.getElementById('set-email').value = s.email || '';
+  document.getElementById('set-street').value = s.address?.street1 || '';
+  document.getElementById('set-city').value = s.address?.city || '';
+  document.getElementById('set-state').value = s.address?.state || '';
+  document.getElementById('set-zip').value = s.address?.zip || '';
+  document.getElementById('set-tax').value = ((s.taxRate||0)*100).toFixed(1);
+  document.getElementById('set-loyalty').value = s.loyaltyPerDollar || 10;
+  document.getElementById('set-delFee').value = s.deliveryFee || 0;
+  document.getElementById('set-freeMin').value = s.freeDeliveryMin || 0;
+  document.getElementById('set-dutchieSlug').value = s.dutchieSlug || '';
+  document.getElementById('set-dutchieUrl').value = s.dutchieUrl || '';
+  const localOn = s.localMenuEnabled === true;
+  document.getElementById('set-localMenu').checked = localOn;
+  updateMenuModeStatus();
+  document.getElementById('set-localMenu').onchange = updateMenuModeStatus;
+  const cartOn = s.localCartEnabled === true;
+  const cartTog = document.getElementById('set-localCart');
+  if (cartTog) {
+    cartTog.checked = cartOn;
+    updateCartModeStatus();
+    cartTog.onchange = updateCartModeStatus;
+  }
+  const loyaltyOn = s.loyaltyEnabled === true;
+  const loyaltyTog = document.getElementById('set-loyalty');
+  if (loyaltyTog) {
+    loyaltyTog.checked = loyaltyOn;
+    updateLoyaltyModeStatus();
+    loyaltyTog.onchange = updateLoyaltyModeStatus;
+  }
+  document.getElementById('hours-grid').innerHTML = (s.hours||[]).map((h,i) => `
+    <div style="display:grid;grid-template-columns:90px 1fr 1fr 60px;gap:8px;align-items:center">
+      <div style="font-size:13px;font-weight:600">${h.day}</div>
+      <input type="time" value="${h.openTime}" data-hr="${i}" data-fld="openTime">
+      <input type="time" value="${h.closeTime}" data-hr="${i}" data-fld="closeTime">
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-dim)"><input type="checkbox" style="width:auto" data-hr="${i}" data-fld="active" ${h.active?'checked':''}> Open</label>
+    </div>`).join('');
+}
+async function saveStoreInfo() {
+  try { await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({
+    storeName: document.getElementById('set-storeName').value,
+    phone: document.getElementById('set-phone').value,
+    email: document.getElementById('set-email').value,
+    address: { street1: document.getElementById('set-street').value,
+               city: document.getElementById('set-city').value,
+               state: document.getElementById('set-state').value,
+               zip: document.getElementById('set-zip').value },
+  }) });
+    toast('Store info saved', 'ok'); const r = await api('/api/admin/settings'); STATE.settings = r.settings; }
+  catch (e) { toast(e.message, 'err'); }
+}
+function updateMenuModeStatus() {
+  const on = document.getElementById('set-localMenu').checked;
+  const el = document.getElementById('menu-mode-status');
+  if (!el) return;
+  el.innerHTML = on
+    ? '<strong style="color:var(--green4)">In-house menu ON</strong> — Visitors see the "Browse Menu" / "Order on Dutchie" toggle on the storefront.'
+    : '<strong style="color:var(--gold3)">Dutchie-only</strong> — Visitors see only your embedded Dutchie menu. The in-house catalog is hidden.';
+}
+async function saveMenuDisplay() {
+  const localMenuEnabled = document.getElementById('set-localMenu').checked;
+  try {
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ localMenuEnabled }) });
+    toast(localMenuEnabled ? 'In-house menu turned ON' : 'Storefront set to Dutchie-only', 'ok');
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+  } catch (e) { toast(e.message, 'err'); }
+}
+function updateCartModeStatus() {
+  const on = document.getElementById('set-localCart').checked;
+  const el = document.getElementById('cart-mode-status');
+  if (!el) return;
+  el.innerHTML = on
+    ? '<strong style="color:var(--green4)">District Cure cart ON</strong> — Customers can browse, add to cart, and checkout on districtcure.com. Orders land in your admin panel (not yet pushed to Dutchie POS).'
+    : '<strong style="color:var(--gold3)">Cart hidden</strong> — Customers only use Dutchie\'s cart inside the embedded menu. No two-cart confusion. Recommended until Dutchie Plus API order push is live.';
+}
+async function saveCartDisplay() {
+  const localCartEnabled = document.getElementById('set-localCart').checked;
+  try {
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ localCartEnabled }) });
+    toast(localCartEnabled ? 'District Cure cart turned ON' : 'Cart hidden — Dutchie-only checkout', 'ok');
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+  } catch (e) { toast(e.message, 'err'); }
+}
+function updateLoyaltyModeStatus() {
+  const on = document.getElementById('set-loyalty').checked;
+  const el = document.getElementById('loyalty-mode-status');
+  if (!el) return;
+  el.innerHTML = on
+    ? '<strong style="color:var(--green4)">Rewards ON</strong> — The Earn Points / Bronze-Silver-Gold-Platinum section is visible to customers.'
+    : '<strong style="color:var(--gold3)">Rewards hidden</strong> — The loyalty section + signup CTA are removed from the storefront. Turn back on once a real program is live.';
+}
+async function saveLoyaltyDisplay() {
+  const loyaltyEnabled = document.getElementById('set-loyalty').checked;
+  try {
+    await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ loyaltyEnabled }) });
+    toast(loyaltyEnabled ? 'Loyalty section turned ON' : 'Loyalty section hidden', 'ok');
+    const r = await api('/api/admin/settings'); STATE.settings = r.settings;
+  } catch (e) { toast(e.message, 'err'); }
+}
+async function savePricing() {
+  try { await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({
+    taxRate: Number(document.getElementById('set-tax').value) / 100,
+    loyaltyPerDollar: Number(document.getElementById('set-loyalty').value),
+    deliveryFee: Number(document.getElementById('set-delFee').value),
+    freeDeliveryMin: Number(document.getElementById('set-freeMin').value),
+    dutchieSlug: document.getElementById('set-dutchieSlug').value,
+    dutchieUrl: document.getElementById('set-dutchieUrl').value,
+  }) });
+    toast('Pricing saved', 'ok'); const r = await api('/api/admin/settings'); STATE.settings = r.settings; }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function saveHours() {
+  const hours = (STATE.settings.hours||[]).map(h => ({ ...h }));
+  document.querySelectorAll('#hours-grid [data-hr]').forEach(el => {
+    const i = +el.dataset.hr, fld = el.dataset.fld;
+    hours[i][fld] = fld === 'active' ? el.checked : el.value;
+  });
+  try { await api('/api/admin/settings', { method:'PATCH', body: JSON.stringify({ hours }) });
+    toast('Hours saved', 'ok'); const r = await api('/api/admin/settings'); STATE.settings = r.settings; }
+  catch (e) { toast(e.message, 'err'); }
+}
+async function changePassword() {
+  const current = document.getElementById('pwd-current').value;
+  const next    = document.getElementById('pwd-new').value;
+  const confirm_ = document.getElementById('pwd-confirm').value;
+  if (!current || !next) return toast('Fill in both password fields', 'err');
+  if (next.length < 6) return toast('New password must be 6+ characters', 'err');
+  if (next !== confirm_) return toast('Passwords do not match', 'err');
+  try { await api('/api/auth/change-password', { method:'POST', body: JSON.stringify({ current, next }) });
+    toast('Password changed', 'ok');
+    ['pwd-current','pwd-new','pwd-confirm'].forEach(id => document.getElementById(id).value = ''); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(bg => bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); }));
+
+function toast(msg, type='info') {
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='ok'?'✓':type==='err'?'✕':'ⓘ'}</span><span>${escapeHTML(msg)}</span>`;
+  stack.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; setTimeout(() => el.remove(), 250); }, 3000);
+}
+
+function escapeHTML(str) { return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function formatPhone(s) {
+  if (!s) return '—';
+  const d = String(s).replace(/\D/g,'');
+  return d.length === 10 ? `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}` : s;
+}
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const sec = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (sec < 60) return 'just now';
+  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+  return Math.floor(sec/86400) + 'd ago';
+}
+
+function initSocket() {
+  if (typeof io === 'undefined') return;
+  socket = io({ path:'/socket.io', transports:['websocket','polling'] });
+  socket.on('connect', () => { socket.emit('join_admin'); console.log('[admin] socket connected'); });
+  socket.on('new_order', async () => { toast('🔔 New order received', 'ok'); await refreshOrders(); });
+  socket.on('order_updated', async () => { await refreshOrders(); });
+  socket.on('product_updated', async () => {
+    const r = await api('/api/admin/products'); STATE.products = r.products;
+    if (CURRENT_PAGE === 'inventory') renderInventory();
+  });
+}
+
+bootstrap();
+</script>
+</body>
+</html>
