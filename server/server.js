@@ -1371,12 +1371,16 @@ app.get('/sitemap.xml', (_, res) => {
     ['/', '1.0', 'daily'], ['/blog', '0.9', 'daily'], ['/patient-resources', '0.8', 'weekly'],
     ['/about', '0.6', 'monthly'], ['/contact', '0.6', 'monthly'], ['/faq', '0.7', 'monthly'],
   ].map(([u, p, f]) => `  <url><loc>${SITE_URL}${u}</loc><lastmod>${today}</lastmod><changefreq>${f}</changefreq><priority>${p}</priority></url>`);
+  
+  const cityUrls = (typeof CITY_PAGES !== 'undefined' ? CITY_PAGES : []).map(city => 
+    `  <url><loc>${SITE_URL}/delivery/${city}</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`);
+    
   const postUrls = POSTS.all().filter(p => p.status === 'published').map(p =>
     `  <url><loc>${SITE_URL}/blog/${p.slug}</loc><lastmod>${(p.updatedAt || p.publishedAt || today).slice(0,10)}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`);
   res.type('application/xml').send(
 `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticUrls, ...postUrls].join('\n')}
+${[...staticUrls, ...cityUrls, ...postUrls].join('\n')}
 </urlset>
 `);
 });
@@ -1387,6 +1391,15 @@ for (const page of PAGES) {
   app.get(`/${page}`, (_, res) => {
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     res.sendFile(path.join(ROOT, 'storefront', 'pages', `${page}.html`));
+  });
+}
+
+// ─── City Delivery SEO Pages ────────────────────────────────────
+const CITY_PAGES = ['capitol-hill'];
+for (const city of CITY_PAGES) {
+  app.get(`/delivery/${city}`, (_, res) => {
+    res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    res.sendFile(path.join(ROOT, 'storefront', 'pages', `delivery-${city}.html`));
   });
 }
 
