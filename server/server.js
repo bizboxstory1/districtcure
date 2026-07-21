@@ -1395,7 +1395,7 @@ for (const page of PAGES) {
 }
 
 // ─── City Delivery SEO Pages ────────────────────────────────────
-const CITY_PAGES = ['capitol-hill', 'columbia-heights'];
+const CITY_PAGES = ['capitol-hill', 'columbia-heights', 'park-view', 'petworth', 'mount-pleasant', 'ledroit-park'];
 for (const city of CITY_PAGES) {
   app.get(`/delivery/${city}`, (_, res) => {
     res.setHeader('Cache-Control', 'no-cache, must-revalidate');
