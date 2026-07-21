@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Capitol Hill CBD & Medical Marijuana Dispensary Delivery | District Cure</title>
-<meta name="description" content="Capitol Hill's trusted cannabis delivery. Serving professionals and residents near Eastern Market with premium CBD wellness products, medical marijuana, and the calming Granddaddy Purple strain.">
+<title>District Cure Dispensary Near Capitol Hill, Washington DC</title>
+<meta name="description" content="District Cure is a top-rated licensed cannabis dispensary serving the Capitol Hill and Eastern Market area with premium medical marijuana.">
 <link rel="canonical" href="https://districtcuredispensary.com/delivery/capitol-hill">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/brand-logo">
@@ -17,6 +17,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/pages/page.css">
+<style>
+/* FAQ specific styles */
+.faq-list { max-width: 860px; margin: 40px auto 0; display: flex; flex-direction: column; gap: 14px; }
+.faq-item { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; overflow: hidden; transition: border-color .2s; }
+.faq-item:hover { border-color: var(--border); }
+.faq-q { width: 100%; text-align: left; padding: 20px 24px; background: transparent !important; border: none !important; font-size: 19px; font-weight: 500; color: var(--cream); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color .2s; font-family: var(--font-display); margin: 0; border-radius: 0; box-shadow: none; }
+.faq-q:hover { color: var(--green3); }
+.faq-q::after { content: '+'; font-size: 24px; font-weight: 300; color: var(--gold3); transition: transform .3s; }
+.faq-item.active { border-color: var(--green3); }
+.faq-item.active .faq-q { color: var(--green3); }
+.faq-item.active .faq-q::after { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: all .3s ease; font-size: 15px; color: var(--text); line-height: 1.6; font-weight: 300; padding: 0 24px; }
+.faq-item.active .faq-a { max-height: 500px; padding-bottom: 24px; padding-top: 4px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+.stat-card { background: var(--card); border: 1px solid var(--border2); padding: 24px; border-radius: var(--radius-lg); text-align: center; }
+.stat-val { font-size: 32px; color: var(--gold3); font-family: var(--font-display); margin-bottom: 8px; }
+.stat-lbl { font-size: 13px; color: var(--text); }
+</style>
 </head>
 <body>
 
@@ -29,133 +47,129 @@
 </nav>
 
 <header class="pg-hero" style="padding-bottom: 40px;">
-  <div class="pg-eyebrow">Washington DC Delivery</div>
-  <h1 class="pg-h1">Capitol Hill <em>Cannabis & CBD Dispensary</em></h1>
-  <p class="pg-lead">Capitol Hill, anchored by the United States Capitol, attracts professionals, policymakers, and long-term residents seeking reliable cannabis and CBD wellness products delivered directly to their door.</p>
+  <div class="pg-eyebrow">Washington DC Dispensary</div>
+  <h1 class="pg-h1">Capitol Hill <em>Cannabis Dispensary</em></h1>
+  <p class="pg-lead">Capitol Hill, anchored by the United States Capitol, attracts professionals, policymakers, and long-term residents seeking reliable cannabis and CBD wellness products delivered directly from District Cure.</p>
 </header>
 
 <main class="pg-wrap">
 
-  <!-- Capitol Hill Custom Cover Image (FIXED STYLING) -->
   <section style="padding: 0 clamp(20px, 4vw, 56px); max-width: 1200px; margin: 0 auto 60px; text-align: center;">
-    <img src="/images/capitol-hill.png" alt="Capitol Hill Cannabis Delivery Washington DC" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-  </section>
-
-  <!-- Popular Products Static Grid (REVERTED TO GRANDDADDY PURPLE) -->
-  <section class="pg-section" style="padding-top: 0;">
-    <h2>Popular in <em>Capitol Hill</em></h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; margin-top: 30px;">
-      
-      <!-- Product 1 -->
-      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
-        <div class="p-thumb">
-          <div class="p-thumb-fallback">
-             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">🍇</span>
-             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Granddaddy Purple Flower</span>
-             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Flower</span>
-          </div>
-          <div class="p-thumb-shine"></div>
-        </div>
-        <div class="p-info">
-          <div class="p-strain-row">
-            <span class="strain-pip pip-indica"></span><span class="strain-label">Indica</span>
-            <span class="p-brand">District Cure</span>
-          </div>
-          <h3 class="p-name">Granddaddy Purple</h3>
-          <div class="p-specs">THC: 22% • Stress Relief</div>
-          <div class="p-footer">
-             <div class="p-price">$55.00</div>
-             <button class="btn-add">Shop Now</button>
-          </div>
-        </div>
-      </a>
-
-      <!-- Product 2 -->
-      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
-        <div class="p-thumb">
-          <div class="p-thumb-fallback">
-             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">💧</span>
-             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Sleep & Recover CBD</span>
-             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Wellness</span>
-          </div>
-          <div class="p-thumb-shine"></div>
-        </div>
-        <div class="p-info">
-          <div class="p-strain-row">
-            <span class="strain-pip pip-cbd"></span><span class="strain-label">CBD</span>
-            <span class="p-brand">DC Wellness</span>
-          </div>
-          <h3 class="p-name">Recover Tincture</h3>
-          <div class="p-specs">1000mg CBD • 0% THC</div>
-          <div class="p-footer">
-             <div class="p-price">$45.00</div>
-             <button class="btn-add">Shop Now</button>
-          </div>
-        </div>
-      </a>
-
-      <!-- Product 3 -->
-      <a href="/#shop" style="text-decoration: none; display: block;" class="p-card">
-        <div class="p-thumb">
-          <div class="p-thumb-fallback">
-             <span class="ptf-emoji" style="font-size: 52px; margin-bottom: 8px; display: block;">🔥</span>
-             <span class="ptf-name" style="font-family: var(--font-display); font-size: 16px; color: var(--cream);">Premium Indica Pre-Rolls</span>
-             <span class="ptf-cat" style="font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold3); margin-top: 6px; display: block;">Pre-Roll</span>
-          </div>
-          <div class="p-thumb-shine"></div>
-        </div>
-        <div class="p-info">
-          <div class="p-strain-row">
-            <span class="strain-pip pip-indica"></span><span class="strain-label">Indica</span>
-            <span class="p-brand">District Cure</span>
-          </div>
-          <h3 class="p-name">Indica Pre-Roll Pack</h3>
-          <div class="p-specs">5x 0.5g • Ready to spark</div>
-          <div class="p-footer">
-             <div class="p-price">$30.00</div>
-             <button class="btn-add">Shop Now</button>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- Expanded SEO Content -->
-  <section class="pg-section">
-    <h2>Premium <em>Cannabis Delivery</em> in Capitol Hill</h2>
-    <p>Wellness consumers in the Capitol Hill and Eastern Market area often seek balanced THC products, CBD tinctures, and sleep-focused edibles to manage the fast-paced Washington DC lifestyle. Whether you are looking for medical marijuana Washington DC or high-quality cannabis dispensary DC options, District Cure provides a trusted, curated selection.</p>
-    <p>Our discreet and reliable delivery service ensures that you get the highest quality products without the hassle of navigating traffic or long lines. Every delivery is handled by our trained, ABCA-licensed professionals who ensure your privacy and safety. We offer same-day delivery right to your door in the Capitol Hill neighborhood, bringing you the finest curated cannabis and wellness goods in the District.</p>
+    <img src="/images/capitol-hill.png" alt="Capitol Hill Cannabis Dispensary DC" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
   </section>
 
   <section class="pg-section">
-    <h2>Why Choose <em>District Cure?</em></h2>
-    <div class="pg-cards">
-      <div class="pg-card">
-        <span class="pc-ico">📍</span>
-        <h3>Local & Licensed</h3>
-        <p>We are a fully ABCA-licensed cannabis dispensary operating legally within Washington DC. This means all our products are strictly lab-tested for safety, potency, and purity. No guessing games—just clean, reliable cannabis.</p>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;">
+      <div style="flex: 1; min-width: 250px; background: rgba(30,122,60,.05); border: 1px solid rgba(48,190,92,.2); padding: 20px; border-radius: 12px;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--green3); margin-bottom: 5px;">Distance</div>
+        <div style="font-size: 18px; color: var(--cream); font-weight: 500;">3.5 miles from Capitol Hill</div>
       </div>
-      <div class="pg-card">
-        <span class="pc-ico">⚡</span>
-        <h3>Fast Delivery</h3>
-        <p>Order online through our live menu and get real-time tracking updates via SMS. We prioritize quick, stealthy, and professional delivery across the entire Capitol Hill area, so you spend less time waiting and more time relaxing.</p>
+      <div style="flex: 1; min-width: 250px; background: rgba(30,122,60,.05); border: 1px solid rgba(48,190,92,.2); padding: 20px; border-radius: 12px;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--green3); margin-bottom: 5px;">Nearest Metro</div>
+        <div style="font-size: 18px; color: var(--cream); font-weight: 500;">Eastern Market (Blue/Orange)</div>
       </div>
-      <div class="pg-card">
-        <span class="pc-ico">🎓</span>
-        <h3>Expert Guidance</h3>
-        <p>Not sure what you need? Our team of knowledgeable budtenders is ready to help you find the perfect strain, edible, or tincture for your specific wellness goals. From deep sleep to creative energy, we have you covered.</p>
+      <div style="flex: 1; min-width: 250px; background: rgba(30,122,60,.05); border: 1px solid rgba(48,190,92,.2); padding: 20px; border-radius: 12px;">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--green3); margin-bottom: 5px;">Address</div>
+        <div style="font-size: 18px; color: var(--cream); font-weight: 500;">2626 Georgia Ave NW</div>
+      </div>
+    </div>
+
+    <h2>About the <em>Capitol Hill</em> Neighborhood</h2>
+    <p>Capitol Hill is one of Washington, DC's oldest and most iconic residential neighborhoods, stretching eastward behind the United States Capitol building. Known for its 19th-century rowhouses, tree-lined streets, and historic landmarks, the neighborhood is a bustling mix of federal workers, congressional staff, long-term residents, and young professionals. The area is anchored by the historic Eastern Market, a vibrant community hub where residents gather every weekend for fresh food, local art, and a bustling flea market.</p>
+    <p>Unlike some of DC's more transient areas, Capitol Hill has a deep-rooted sense of community. The neighborhood's residential streets offer a quiet, almost small-town feel despite being at the center of national politics. Historic commercial corridors like Barracks Row (8th Street SE) provide a diverse array of dining and retail options, making the neighborhood highly walkable and self-contained.</p>
+    <p>For cannabis consumers in Capitol Hill, convenience and discretion are key. Many residents balance demanding professional lives with a desire for high-quality wellness and relaxation products. This demographic often seeks out licensed, reliable dispensaries like District Cure that offer transparent lab testing, expert guidance, and discreet delivery options that fit seamlessly into a busy schedule.</p>
+    <p>While District Cure is located a few miles away on Georgia Avenue, our delivery service has become a trusted resource for Capitol Hill residents who prioritize safety, legality, and premium product selection over unregulated storefronts closer to home.</p>
+  </section>
+
+  <section class="pg-section" style="background: var(--surface); border-radius: var(--radius-lg); padding: 40px 30px;">
+    <h2>Best-Selling Cannabis <em>Products</em> in This Area</h2>
+    <p>Capitol Hill's customer base is characterized by a strong preference for wellness-focused and discreet cannabis products. District Cure sees significant demand from this area for precisely dosed edibles, particularly gummies and mints, which offer a reliable and smokeless way to unwind after a long day on the Hill. Low-dose and CBD-balanced products are especially popular among professionals looking for stress relief without intense psychoactive effects.</p>
+    <p>Tinctures and topicals also perform exceptionally well in Capitol Hill. Customers often seek out these products for targeted relief from chronic pain or sleep issues, favoring the easy integration into their daily health routines. When it comes to flower, Capitol Hill residents typically gravitate towards premium, classic strains like Granddaddy Purple or balanced hybrids that offer relaxation without heavy sedation.</p>
+    <p>Vape cartridges are another staple for this neighborhood, favored for their convenience and lack of lingering odor, making them ideal for apartment living or discreet use. District Cure's commitment to clean, lab-tested vape products resonates strongly with a demographic that values health, safety, and regulatory compliance.</p>
+    <p>Above all, Capitol Hill shoppers appreciate the knowledgeable, consultative approach of the District Cure team. Whether ordering delivery or visiting the Georgia Avenue location, they value the ability to ask detailed questions about cannabinoid profiles, sourcing, and intended effects to ensure they are getting exactly what they need.</p>
+    <div class="pg-cta-row" style="margin-top: 30px; justify-content: center;">
+      <a href="/#shop" class="pg-btn pg-btn-primary">Shop Our Live Menu →</a>
+    </div>
+  </section>
+
+  <section class="pg-section">
+    <h2>Legal Access & <em>Medical Cannabis</em> Registration</h2>
+    <p>All cannabis purchases for Capitol Hill residents go through Washington DC's official medical cannabis program, regulated by the Alcoholic Beverage and Cannabis Administration (ABCA). District residents who are 21 and older can take advantage of the streamlined self-certification process, which allows them to register online in minutes without needing a doctor's recommendation. Upon completing the application, patients receive a temporary digital registration that can be used immediately at licensed retailers like District Cure. For the many out-of-state professionals and visitors in the Capitol Hill area, DC also offers reciprocity, accepting valid medical cannabis cards from other jurisdictions, ensuring legal and safe access for everyone.</p>
+  </section>
+
+  <section class="pg-section">
+    <h2>Cannabis Use in Washington DC: <em>By the Numbers</em></h2>
+    <p>Washington, DC maintains one of the highest rates of cannabis use in the nation, with approximately one-third of adult residents reporting usage for medical or recreational purposes. As the city's legal framework has evolved, the registered medical cannabis patient population has surged past 116,000 active patients. This normalization of cannabis is clearly visible in neighborhoods like Capitol Hill, where use spans a wide demographic—from young staffers to established professionals and retirees—who view cannabis as a standard part of their wellness and relaxation routines. District Cure is proud to support this growing community by operating as a fully licensed and compliant retailer.</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val">1/3</div>
+        <div class="stat-lbl">DC Adults Report Using Cannabis</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">116k+</div>
+        <div class="stat-lbl">Active Registered Patients</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">68</div>
+        <div class="stat-lbl">Licensed DC Retailers</div>
       </div>
     </div>
   </section>
 
-  <section class="pg-section" style="padding-bottom: 90px;">
-    <h2>Order <em>Delivery Today</em></h2>
-    <p>Browse our live menu to see what's in stock for Capitol Hill delivery today. Shop in person at our Georgia Ave location, order ahead for pickup, or get same-day delivery right to your address.</p>
-    <div class="pg-cta-row">
-      <a href="/#shop" class="pg-btn pg-btn-primary">Shop Live Menu →</a>
-      <a href="/patient-resources" class="pg-btn pg-btn-outline">Medical Resources</a>
+  <section class="pg-section" style="padding-bottom: 20px;">
+    <h2>Frequently Asked <em>Questions</em></h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Does District Cure deliver to Capitol Hill, DC?</button>
+        <div class="faq-a">Yes, District Cure offers reliable, discreet delivery directly to residences in the Capitol Hill neighborhood.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do I need a medical card to order cannabis in Capitol Hill?</button>
+        <div class="faq-a">Yes, all purchases require a valid DC medical cannabis registration. Residents 21+ can self-certify online in minutes without a doctor's visit.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What cannabis products are most popular on Capitol Hill?</button>
+        <div class="faq-a">Capitol Hill customers frequently prefer discreet, wellness-focused products like precisely dosed edibles, CBD-balanced tinctures, and premium vape cartridges.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How far is District Cure from Eastern Market?</button>
+        <div class="faq-a">Our storefront at 2626 Georgia Ave NW is roughly 3.5 miles from the Eastern Market area, a quick drive or convenient delivery distance.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can out-of-state visitors near the Capitol buy cannabis?</button>
+        <div class="faq-a">Yes, DC offers reciprocity for valid out-of-state medical cards, and visitors can also apply for a temporary 30-day DC registration online.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is cannabis lab-tested at District Cure?</button>
+        <div class="faq-a">Absolutely. As an ABCA-licensed dispensary, every product we sell undergoes rigorous lab testing for safety, purity, and potency.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What are District Cure's delivery hours for Capitol Hill?</button>
+        <div class="faq-a">We are open and offer delivery daily from 9:00 AM to 11:00 PM. Check our live menu for specific delivery cutoff times.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is cannabis consumption legal in public on Capitol Hill?</button>
+        <div class="faq-a">No, public consumption of cannabis remains illegal in Washington DC. Consumption should be kept to private residences.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does District Cure carry Granddaddy Purple?</button>
+        <div class="faq-a">Yes, classic relaxing strains like Granddaddy Purple are often in stock and highly popular among our Capitol Hill customers. Check our live menu for current availability.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How do I register for a DC medical cannabis card?</button>
+        <div class="faq-a">DC residents 21+ can visit the ABCA portal to self-certify online. The process takes minutes and provides a temporary digital card for same-day use.</div>
+      </div>
     </div>
+    <script>
+      document.querySelectorAll('.faq-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.parentElement;
+          const isActive = item.classList.contains('active');
+          document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+          if (!isActive) item.classList.add('active');
+        });
+      });
+    </script>
   </section>
 
 </main>
@@ -179,12 +193,12 @@
       <li><a href="https://www.instagram.com/districtcure" target="_blank" rel="noopener">Instagram</a></li>
     </ul></div>
     <div><h4>Delivery Areas</h4><ul>
-      <li><a href="/delivery/capitol-hill">Capitol Hill</a></li>
       <li><a href="/delivery/columbia-heights">Columbia Heights</a></li>
       <li><a href="/delivery/park-view">Park View</a></li>
       <li><a href="/delivery/petworth">Petworth</a></li>
       <li><a href="/delivery/mount-pleasant">Mount Pleasant</a></li>
       <li><a href="/delivery/ledroit-park">Howard Univ &amp; LeDroit</a></li>
+      <li><a href="/delivery/capitol-hill">Capitol Hill</a></li>
     </ul></div>
   </div>
   <div class="pg-foot-bottom">
