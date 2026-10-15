@@ -21,7 +21,7 @@ const NAV = `
   <a href="/" class="pg-logo"><img src="/brand-logo" alt="District Cure" style="height:38px;width:auto;display:block" onerror="this.style.display='none'"><div><div class="pg-logo-name">District Cure</div><div class="pg-logo-sub">Washington DC</div></div></a>
   <div class="pg-nav-links">
     <a href="/#shop">Menu</a><a href="/blog">Blog</a><a href="/patient-resources">Patients</a><a href="/about">About</a><a href="/contact">Contact</a>
-    <a href="/#shop" class="pg-cta">Order Now</a>
+    <a href="/#shop" class="pg-cta">Shop Now</a>
   </div>
 </nav>`;
 
@@ -72,6 +72,11 @@ const BLOG_CSS = `
 .post-read{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold3);margin-top:6px}
 /* Single post */
 .article-wrap{max-width:760px;margin:0 auto;padding:40px clamp(20px,4vw,56px) 90px}
+.article-top-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.article-back{display:inline-flex;align-items:center;font-size:12px;color:var(--gold3);letter-spacing:.08em;text-transform:uppercase;transition:color .2s;text-decoration:none}
+.article-back:hover{color:var(--cream)}
+.article-shop-btn-top{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg)!important;border-radius:var(--radius-pill);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .25s;box-shadow:0 4px 14px rgba(184,131,42,.25);text-decoration:none}
+.article-shop-btn-top:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,131,42,.45)}
 .article-head{text-align:center;margin-bottom:30px}
 .article-cat{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold3);font-weight:600}
 .article-title{font-family:var(--font-display);font-size:clamp(30px,5vw,50px);font-weight:400;line-height:1.08;color:var(--cream);margin:12px 0}
@@ -86,7 +91,14 @@ const BLOG_CSS = `
 .article-body img{max-width:100%;border-radius:var(--radius);margin:18px 0}
 .article-tags{margin-top:30px;display:flex;gap:8px;flex-wrap:wrap}
 .article-tag{font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:var(--radius-pill);padding:5px 12px}
-.article-back{display:inline-block;margin-bottom:20px;font-size:12px;color:var(--gold3);letter-spacing:.08em;text-transform:uppercase}
+.article-shop-card{margin-top:44px;padding:38px clamp(20px,4vw,36px);background:linear-gradient(135deg,rgba(17,24,32,.95),rgba(22,31,42,.85));border:1px solid rgba(184,131,42,.28);border-radius:var(--radius-lg);text-align:center;position:relative;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.article-shop-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(30,122,60,.14),transparent 65%);pointer-events:none}
+.asc-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold3);margin-bottom:12px;position:relative}
+.asc-title{font-family:var(--font-display);font-size:clamp(26px,4vw,34px);font-weight:400;color:var(--cream);margin:0 0 10px;position:relative;line-height:1.2}
+.asc-sub{font-size:14px;color:var(--text);font-weight:300;line-height:1.7;max-width:540px;margin:0 auto 24px;position:relative}
+.asc-actions{display:flex;justify-content:center;position:relative}
+.asc-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 34px;font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;border-radius:var(--radius-pill);background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg)!important;box-shadow:0 8px 24px rgba(184,131,42,.3);transition:all .25s;text-decoration:none}
+.asc-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(184,131,42,.45);color:var(--bg)!important}
 .related{max-width:1100px;margin:0 auto;padding:0 clamp(20px,4vw,56px) 80px}
 .related h3{font-family:var(--font-display);font-size:26px;color:var(--cream);font-weight:400;text-align:center;margin-bottom:24px}`;
 
@@ -138,7 +150,7 @@ function postCard(p) {
       <span class="post-cat">${esc(p.category || 'Blog')}</span>
       <h2>${esc(p.title)}</h2>
       <p>${esc(p.excerpt || '')}</p>
-      <div class="post-meta">${esc(fmtDate(p.publishedAt || p.createdAt))}${p.author ? ' · ' + esc(p.author) : ''}</div>
+      <div class="post-meta">${esc(fmtDate(p.publishedAt || p.createdAt))}${p.author ? ' · By ' + esc(p.author) : ''}</div>
       <span class="post-read">Read more →</span>
     </div>
   </a>`;
@@ -196,7 +208,10 @@ function renderBlogPost(post, settings, related = []) {
 
   const body = `
   <article class="article-wrap">
-    <a class="article-back" href="/blog">← All posts</a>
+    <div class="article-top-bar">
+      <a class="article-back" href="/blog">← All posts</a>
+      <a class="article-shop-btn-top" href="/#shop">Shop Now →</a>
+    </div>
     <div class="article-head">
       <div class="article-cat">${esc(post.category || 'Blog')}</div>
       <h1 class="article-title">${esc(post.title)}</h1>
@@ -205,6 +220,17 @@ function renderBlogPost(post, settings, related = []) {
     ${cover}
     <div class="article-body">${post.body || ''}</div>
     ${tags}
+    <div class="article-shop-card">
+      <span class="asc-badge">District Cure Dispensary · Washington DC</span>
+      <h3 class="asc-title">Ready to Shop?</h3>
+      <p class="asc-sub">Discover DC's finest curated cannabis — small-batch flower, edibles, vape carts, concentrates &amp; pre-rolls. Order online for fast same-day delivery or convenient in-store pickup on Georgia Ave.</p>
+      <div class="asc-actions">
+        <a href="/#shop" class="asc-btn">
+          <span>Shop Now</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
   </article>
   ${relatedHtml}`;
 
