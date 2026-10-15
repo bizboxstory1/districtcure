@@ -21,7 +21,7 @@ const NAV = `
   <a href="/" class="pg-logo"><img src="/brand-logo" alt="District Cure" style="height:38px;width:auto;display:block" onerror="this.style.display='none'"><div><div class="pg-logo-name">District Cure</div><div class="pg-logo-sub">Washington DC</div></div></a>
   <div class="pg-nav-links">
     <a href="/#shop">Menu</a><a href="/blog">Blog</a><a href="/patient-resources">Patients</a><a href="/about">About</a><a href="/contact">Contact</a>
-    <a href="/#shop" class="pg-cta">Shop Now</a>
+    <a href="https://dutchie.com/dispensary/district-smoke-shop" target="_blank" rel="noopener" class="pg-cta">Shop Now</a>
   </div>
 </nav>`;
 
@@ -158,6 +158,7 @@ function postCard(p) {
 
 function renderBlogList(posts, categories, settings, activeCategory) {
   const seo = (settings && settings.seo) || {};
+  const dutchieUrl = (settings && settings.dutchieUrl) || 'https://dutchie.com/dispensary/district-smoke-shop';
   const catChips = ['All', ...categories].map(c => {
     const on = (activeCategory || 'All') === c;
     const href = c === 'All' ? '/blog' : `/blog?category=${encodeURIComponent(c)}`;
@@ -172,7 +173,7 @@ function renderBlogList(posts, categories, settings, activeCategory) {
     <h1 class="pg-h1">The <em>Blog</em></h1>
     <p class="pg-lead">Cannabis education, DC dispensary news, product guides, and tips from our team.</p>
     <div style="margin-top:20px;display:flex;justify-content:center">
-      <a href="/#shop" class="article-shop-btn-top">Shop Live Menu →</a>
+      <a href="${esc(dutchieUrl)}" target="_blank" rel="noopener" class="article-shop-btn-top">Shop on Dutchie →</a>
     </div>
     <div class="blog-cats">${catChips}</div>
   </header>
@@ -188,6 +189,7 @@ function renderBlogList(posts, categories, settings, activeCategory) {
 }
 
 function renderBlogPost(post, settings, related = []) {
+  const dutchieUrl = (settings && settings.dutchieUrl) || 'https://dutchie.com/dispensary/district-smoke-shop';
   const canonical = `${SITE}/blog/${post.slug}`;
   const cover = post.coverImage ? `<img class="article-cover" src="${esc(post.coverImage)}" alt="${esc(post.title)}">` : '';
   const tags = Array.isArray(post.tags) && post.tags.length
@@ -213,14 +215,14 @@ function renderBlogPost(post, settings, related = []) {
   <article class="article-wrap">
     <div class="article-top-bar">
       <a class="article-back" href="/blog">← All posts</a>
-      <a class="article-shop-btn-top" href="/#shop">Shop Now →</a>
+      <a class="article-shop-btn-top" href="${esc(dutchieUrl)}" target="_blank" rel="noopener">Shop Now →</a>
     </div>
     <div class="article-head">
       <div class="article-cat">${esc(post.category || 'Blog')}</div>
       <h1 class="article-title">${esc(post.title)}</h1>
       <div class="article-meta">${esc(fmtDate(post.publishedAt || post.createdAt))}${post.author ? ' · By ' + esc(post.author) : ''}</div>
       <div style="margin-top:16px;display:flex;justify-content:center">
-        <a href="/#shop" class="article-shop-btn-top">Shop Now →</a>
+        <a href="${esc(dutchieUrl)}" target="_blank" rel="noopener" class="article-shop-btn-top">Shop Now →</a>
       </div>
     </div>
     ${cover}
@@ -231,7 +233,7 @@ function renderBlogPost(post, settings, related = []) {
       <h3 class="asc-title">Ready to Shop?</h3>
       <p class="asc-sub">Discover DC's finest curated cannabis — small-batch flower, edibles, vape carts, concentrates &amp; pre-rolls. Order online for fast same-day delivery or convenient in-store pickup on Georgia Ave.</p>
       <div class="asc-actions">
-        <a href="/#shop" class="asc-btn">
+        <a href="${esc(dutchieUrl)}" target="_blank" rel="noopener" class="asc-btn">
           <span>Shop Now</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
