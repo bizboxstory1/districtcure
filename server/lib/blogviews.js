@@ -171,6 +171,9 @@ function renderBlogList(posts, categories, settings, activeCategory) {
     <div class="pg-eyebrow">District Cure Journal</div>
     <h1 class="pg-h1">The <em>Blog</em></h1>
     <p class="pg-lead">Cannabis education, DC dispensary news, product guides, and tips from our team.</p>
+    <div style="margin-top:20px;display:flex;justify-content:center">
+      <a href="/#shop" class="article-shop-btn-top">Shop Live Menu →</a>
+    </div>
     <div class="blog-cats">${catChips}</div>
   </header>
   <div class="blog-grid">${grid}</div>`;
@@ -216,6 +219,9 @@ function renderBlogPost(post, settings, related = []) {
       <div class="article-cat">${esc(post.category || 'Blog')}</div>
       <h1 class="article-title">${esc(post.title)}</h1>
       <div class="article-meta">${esc(fmtDate(post.publishedAt || post.createdAt))}${post.author ? ' · By ' + esc(post.author) : ''}</div>
+      <div style="margin-top:16px;display:flex;justify-content:center">
+        <a href="/#shop" class="article-shop-btn-top">Shop Now →</a>
+      </div>
     </div>
     ${cover}
     <div class="article-body">${post.body || ''}</div>
